@@ -493,7 +493,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
   /* Animate trio — always visible outside face adjustments */
   .anim-wrap {
-    position: fixed !important; bottom: 120px; left: 20px; z-index: 149;
+    position: fixed !important; bottom: 140px; left: 15px; z-index: 149;
     flex-direction: column; gap: 6px; pointer-events: auto !important;
   }
   .layout:has(.sidebar.drawer-open) .anim-wrap { display: none !important; }
@@ -511,7 +511,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     width: calc(50vw + 5px) !important;
     z-index: 201;
   }
-  .viewer-wrap.controls-open .face-loaded .face-panel { display: flex !important; }
+  .viewer-wrap.controls-open.face-loaded .face-panel { display: flex !important; }
 
   /* Color panel: hidden until face adjustments opened */
   .photo-panel {
@@ -524,7 +524,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     padding-right: 4px !important;
     z-index: 201;
   }
-  .viewer-wrap.controls-open .face-loaded .photo-panel { display: flex !important; }
+  .viewer-wrap.controls-open.face-loaded .photo-panel { display: flex !important; }
 
   /* ── Buttons: same height, 50% wider ── */
   .fp-row { gap: 4px !important; }
