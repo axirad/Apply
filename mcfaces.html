@@ -744,28 +744,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       </div>
       <div class="fp-row">
         <span class="fp-label"></span>
-        <button class="adj-btn" id="color-compare-btn" disabled style="background:none;border:none;padding:0;cursor:pointer;line-height:0">
-          <svg xmlns="http://www.w3.org/2000/svg" width="225" height="129" viewBox="0 0 150 86">
-            <defs>
-              <linearGradient id="btnG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#f07828"/><stop offset="100%" stop-color="#c84c00"/>
-              </linearGradient>
-              <path id="cTop" d="M 8,68 A 88,88 0 0,0 142,68"/>
-              <path id="cBot" d="M 8,18 A 88,88 0 0,1 142,18"/>
-            </defs>
-            <rect width="150" height="86" rx="11" fill="url(#btnG)" stroke="#9a3600" stroke-width="2"/>
-            <text font-family="Arial Black,Arial" font-weight="900" font-size="15" fill="white">
-              <textPath href="#cTop" startOffset="50%" text-anchor="middle">ORIGINAL</textPath>
-            </text>
-            <path d="M 50,43 Q 75,28 100,43 Q 75,58 50,43 Z" fill="white"/>
-            <circle cx="75" cy="43" r="11" fill="#e07000"/>
-            <circle cx="75" cy="43" r="5.5" fill="#111"/>
-            <circle cx="78.5" cy="40" r="2.5" fill="white" opacity="0.85"/>
-            <text font-family="Arial Black,Arial" font-weight="900" font-size="15" fill="white">
-              <textPath href="#cBot" startOffset="50%" text-anchor="middle">CURRENT</textPath>
-            </text>
-          </svg>
-        </button>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+          <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">ORIGINAL</span>
+          <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;white-space:nowrap">👁️ COMPARE</button>
+          <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">CURRENT</span>
+        </div>
       </div>
     </div>
 
@@ -1408,12 +1391,12 @@ _compareBtn.addEventListener('click', () => {
     _compareSnapshot = { faceBright:S.faceBright, faceSat:S.faceSat, faceWarmth:S.faceWarmth };
     S.faceBright=S.defaultBright; S.faceSat=S.defaultSat; S.faceWarmth=S.defaultWarmth;
     _comparing = true;
-    _compareBtn.textContent = '👁️ Comparing…';
+    _compareBtn.textContent = '👁️ ORIGINAL…';
     _compareBtn.classList.add('on');
   } else {
     Object.assign(S, _compareSnapshot); _compareSnapshot = null;
     _comparing = false;
-    _compareBtn.textContent = '👁️ Compare';
+    _compareBtn.textContent = '👁️ COMPARE';
     _compareBtn.classList.remove('on');
   }
   markDirty();
