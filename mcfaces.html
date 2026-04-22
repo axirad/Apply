@@ -742,11 +742,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <button class="fp-btn adj-btn" id="auto-color-btn" disabled style="font-size:0.65rem;font-weight:700;letter-spacing:0.04em;padding:3px 8px">Auto</button>
         <button class="fp-btn adj-btn" id="adj-reset-btn" disabled style="font-size:1.8rem;line-height:1;padding:0 6px">↺</button>
       </div>
-      <div class="fp-row">
+      <div class="fp-row" style="margin-top:6px">
         <span class="fp-label"></span>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
           <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">ORIGINAL</span>
-          <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;white-space:nowrap">👁️ COMPARE</button>
+          <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;white-space:nowrap;width:120px !important;height:29px !important;padding:0 !important">👁️ COMPARE</button>
           <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">CURRENT</span>
         </div>
       </div>
@@ -1382,25 +1382,27 @@ document.getElementById('pos-reset-btn').addEventListener('click', () => {
 
 // Orig button removed
 
-// Compare toggle: show original color adjustments vs current
-let _comparing = false, _compareSnapshot = null;
+// Compare: hold to see original color, release to return to current
+let _compareSnapshot = null;
 const _compareBtn = document.getElementById('color-compare-btn');
-_compareBtn.addEventListener('click', () => {
+function _releaseCompare() {
+  if (!_compareSnapshot) return;
+  Object.assign(S, _compareSnapshot); _compareSnapshot = null;
+  _compareBtn.textContent = '👁️ COMPARE';
+  _compareBtn.classList.remove('on');
+  markDirty();
+}
+_compareBtn.addEventListener('pointerdown', e => {
   if (_compareBtn.disabled) return;
-  if (!_comparing) {
-    _compareSnapshot = { faceBright:S.faceBright, faceSat:S.faceSat, faceWarmth:S.faceWarmth };
-    S.faceBright=S.defaultBright; S.faceSat=S.defaultSat; S.faceWarmth=S.defaultWarmth;
-    _comparing = true;
-    _compareBtn.textContent = '👁️ ORIGINAL…';
-    _compareBtn.classList.add('on');
-  } else {
-    Object.assign(S, _compareSnapshot); _compareSnapshot = null;
-    _comparing = false;
-    _compareBtn.textContent = '👁️ COMPARE';
-    _compareBtn.classList.remove('on');
-  }
+  _compareBtn.setPointerCapture(e.pointerId);
+  _compareSnapshot = { faceBright:S.faceBright, faceSat:S.faceSat, faceWarmth:S.faceWarmth };
+  S.faceBright=S.defaultBright; S.faceSat=S.defaultSat; S.faceWarmth=S.defaultWarmth;
+  _compareBtn.textContent = '👁️ ORIGINAL';
+  _compareBtn.classList.add('on');
   markDirty();
 });
+_compareBtn.addEventListener('pointerup',     _releaseCompare);
+_compareBtn.addEventListener('pointercancel', _releaseCompare);
 
 // ── Hint bubble click — opens the relevant step ───────────────────────────────
 document.querySelector('.hint-bubble').addEventListener('click', (e) => {
