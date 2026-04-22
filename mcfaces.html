@@ -738,33 +738,30 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <button class="fp-btn adj-btn" id="warm-btn" disabled>+</button>
       </div>
       <div class="fp-row">
-        <span class="fp-label">Auto</span>
+        <span class="fp-label"></span>
         <button class="fp-btn adj-btn" id="auto-color-btn" disabled style="font-size:0.65rem;font-weight:700;letter-spacing:0.04em;padding:3px 8px">Auto</button>
-      </div>
-      <div class="fp-row">
-        <span class="fp-label">Reset</span>
-        <button class="fp-btn adj-btn" id="adj-reset-btn" disabled>↺</button>
+        <button class="fp-btn adj-btn" id="adj-reset-btn" disabled style="font-size:1.8rem;line-height:1;padding:0 6px">↺</button>
       </div>
       <div class="fp-row">
         <span class="fp-label"></span>
-        <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="background:none;border:none;padding:0;cursor:pointer;line-height:0">
-          <svg xmlns="http://www.w3.org/2000/svg" width="150" height="86" viewBox="0 0 150 86">
+        <button class="adj-btn" id="color-compare-btn" disabled style="background:none;border:none;padding:0;cursor:pointer;line-height:0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="225" height="129" viewBox="0 0 150 86">
             <defs>
               <linearGradient id="btnG" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#f07828"/><stop offset="100%" stop-color="#c84c00"/>
               </linearGradient>
-              <path id="cTop" d="M 6,60 A 82,82 0 0,0 144,60"/>
-              <path id="cBot" d="M 6,26 A 82,82 0 0,1 144,26"/>
+              <path id="cTop" d="M 8,68 A 88,88 0 0,0 142,68"/>
+              <path id="cBot" d="M 8,18 A 88,88 0 0,1 142,18"/>
             </defs>
             <rect width="150" height="86" rx="11" fill="url(#btnG)" stroke="#9a3600" stroke-width="2"/>
-            <text font-family="Arial Black,Arial" font-weight="900" font-size="16" fill="white">
+            <text font-family="Arial Black,Arial" font-weight="900" font-size="15" fill="white">
               <textPath href="#cTop" startOffset="50%" text-anchor="middle">ORIGINAL</textPath>
             </text>
-            <path d="M 52,43 Q 75,29 98,43 Q 75,57 52,43 Z" fill="white"/>
-            <circle cx="75" cy="43" r="10.5" fill="#e07000"/>
-            <circle cx="75" cy="43" r="5" fill="#111"/>
-            <circle cx="78" cy="40" r="2.5" fill="white" opacity="0.85"/>
-            <text font-family="Arial Black,Arial" font-weight="900" font-size="16" fill="white">
+            <path d="M 50,43 Q 75,28 100,43 Q 75,58 50,43 Z" fill="white"/>
+            <circle cx="75" cy="43" r="11" fill="#e07000"/>
+            <circle cx="75" cy="43" r="5.5" fill="#111"/>
+            <circle cx="78.5" cy="40" r="2.5" fill="white" opacity="0.85"/>
+            <text font-family="Arial Black,Arial" font-weight="900" font-size="15" fill="white">
               <textPath href="#cBot" startOffset="50%" text-anchor="middle">CURRENT</textPath>
             </text>
           </svg>
