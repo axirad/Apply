@@ -563,7 +563,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       <div class="drawer-pill"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 4px">
         <span style="font-size:0.72rem;color:#fff;text-align:center;line-height:1.3;flex:1;padding:0 6px">NOT AN OFFICIAL<br>MINECRAFT PRODUCT.</span>
-        <div class="drawer-label" style="white-space:nowrap;flex-shrink:0">▲ Tap to Open</div>
+        <div class="drawer-label" style="white-space:nowrap;flex-shrink:0">▲ Start Over</div>
         <span style="font-size:0.72rem;color:#fff;text-align:center;line-height:1.3;flex:1;padding:0 6px">NOT APPROVED BY OR ASSOCIATED<br>WITH MOJANG OR MICROSOFT.</span>
       </div>
     </div>
@@ -744,7 +744,9 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       <div class="fp-row">
         <span class="fp-label">Reset</span>
         <button class="fp-btn adj-btn" id="adj-reset-btn" disabled>↺</button>
-        <button class="fp-btn adj-btn" id="color-orig-btn" disabled style="margin-left:4px;font-size:0.58rem;font-weight:700;letter-spacing:0.03em">Orig</button>
+      </div>
+      <div class="fp-row">
+        <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="width:100%">👁️ Compare</button>
       </div>
     </div>
 
@@ -940,7 +942,7 @@ async function loadSkinList() {
         // Close drawer on mobile so hint arrow is visible
         document.getElementById('sidebar').classList.remove('drawer-open');
         const lbl = document.querySelector('.drawer-label');
-        if (lbl) lbl.textContent = '▲ Tap to Open';
+        if (lbl) lbl.textContent = '▲ Start Over';
         try {
           const blob = await fetch(`${API_BASE}/skins/${encodeURIComponent(path)}`).then(r => r.blob());
           onSkinFile(new File([blob], file, { type:'image/png' }));
@@ -1378,22 +1380,25 @@ document.getElementById('pos-reset-btn').addEventListener('click', () => {
 
 // Orig button removed
 
-// Color Orig: hold to preview original photo adjustments, release to restore
-let _colorOrigSnapshot = null;
-const _colorOrigBtn = document.getElementById('color-orig-btn');
-function _restoreColorOrig() {
-  if (!_colorOrigSnapshot) return;
-  Object.assign(S, _colorOrigSnapshot); _colorOrigSnapshot = null; markDirty();
-}
-_colorOrigBtn.addEventListener('pointerdown', e => {
-  if (_colorOrigBtn.disabled) return;
-  _colorOrigBtn.setPointerCapture(e.pointerId);
-  _colorOrigSnapshot = { faceBright:S.faceBright, faceSat:S.faceSat, faceWarmth:S.faceWarmth };
-  S.faceBright=S.defaultBright; S.faceSat=S.defaultSat; S.faceWarmth=S.defaultWarmth;
+// Compare toggle: show original color adjustments vs current
+let _comparing = false, _compareSnapshot = null;
+const _compareBtn = document.getElementById('color-compare-btn');
+_compareBtn.addEventListener('click', () => {
+  if (_compareBtn.disabled) return;
+  if (!_comparing) {
+    _compareSnapshot = { faceBright:S.faceBright, faceSat:S.faceSat, faceWarmth:S.faceWarmth };
+    S.faceBright=S.defaultBright; S.faceSat=S.defaultSat; S.faceWarmth=S.defaultWarmth;
+    _comparing = true;
+    _compareBtn.textContent = '👁️ Comparing…';
+    _compareBtn.classList.add('on');
+  } else {
+    Object.assign(S, _compareSnapshot); _compareSnapshot = null;
+    _comparing = false;
+    _compareBtn.textContent = '👁️ Compare';
+    _compareBtn.classList.remove('on');
+  }
   markDirty();
 });
-_colorOrigBtn.addEventListener('pointerup',     _restoreColorOrig);
-_colorOrigBtn.addEventListener('pointercancel', _restoreColorOrig);
 
 // ── Hint bubble click — opens the relevant step ───────────────────────────────
 document.querySelector('.hint-bubble').addEventListener('click', (e) => {
@@ -1421,7 +1426,7 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
 
   function setOpen(open) {
     sidebar.classList.toggle('drawer-open', open);
-    label.textContent = open ? '▼ Tap to Close' : '▲ Tap to Open';
+    label.textContent = open ? '▼ Tap to Close' : '▲ Start Over';
     if (!open && S.hasSkin && !S.hasFace) {
       const bubble = document.querySelector('.hint-bubble');
       if (bubble) {
@@ -1431,7 +1436,13 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
     }
   }
 
-  handle.addEventListener('click', () => setOpen(!sidebar.classList.contains('drawer-open')));
+  handle.addEventListener('click', () => {
+    if (sidebar.classList.contains('drawer-open')) {
+      setOpen(false);
+    } else {
+      location.reload();
+    }
+  });
 
   sidebar.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
   sidebar.addEventListener('touchend', e => {
@@ -1492,7 +1503,7 @@ document.getElementById('show-controls-btn').addEventListener('click', () => set
 document.getElementById('upload-skin-btn').addEventListener('click', () => {
   document.getElementById('sidebar').classList.remove('drawer-open');
   const lbl = document.querySelector('.drawer-label');
-  if (lbl) lbl.textContent = '▲ Tap to Open';
+  if (lbl) lbl.textContent = '▲ Start Over';
   document.getElementById('skin-file').click();
 });
 let _facePickerOpen = false;
@@ -1501,7 +1512,7 @@ document.getElementById('face-btn').addEventListener('click', () => {
   // Close drawer on mobile so the loading characters are visible
   document.getElementById('sidebar').classList.remove('drawer-open');
   const lbl = document.querySelector('.drawer-label');
-  if (lbl) lbl.textContent = '▲ Tap to Open';
+  if (lbl) lbl.textContent = '▲ Start Over';
   // Show emoji crew immediately — don't wait for file picker to return
   S.faceProcessing = true; updateButtons();
   showLoading('Finding your photo…');
