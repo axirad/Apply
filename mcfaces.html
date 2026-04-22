@@ -221,7 +221,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
 /* ── Floating control panels — hidden until "Adjust Face" toggled ── */
 .left-controls {
-  position: absolute; right: calc(50% + 160px); bottom: 110px;
+  position: absolute; right: calc(50% + 145px); bottom: 110px;
   display: flex; flex-direction: column; gap: 10px;
   opacity: 0; pointer-events: none;
   transition: opacity 0.2s;
@@ -291,7 +291,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 .fp-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .fp-btn.def { width: 56px; font-size: 0.7rem; }
 .photo-panel .fp-label { width: 80px; }
-.photo-panel .fp-btn { width: 44px; height: 34px; font-size: 1.1rem; }
+.photo-panel .fp-btn { width: 44px; height: 29px; font-size: 1.1rem; }
 
 /* ── Face Adjustments button ── */
 .show-controls-wrap {
@@ -386,7 +386,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 .mip-section { font-size: 1rem; font-weight: 700; color: #ff8000; margin: 18px 0 10px; }
 .mip-accessories { width: 100%; border-radius: 10px; display: block; }
 .mip-close {
-  display: block; margin: 20px auto 0;
   background: linear-gradient(135deg,#d45000,#ff8000); color: #fff;
   border: none; border-radius: 22px; padding: 10px 36px;
   font-size: 1rem; font-weight: 800; cursor: pointer;
@@ -652,7 +651,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <button class="fp-btn adj-btn" id="nudge-down-btn" disabled>▼</button>
       </div>
       <div class="fp-row desktop-only">
-        <span class="fp-label">Side</span>
+        <span class="fp-label">Side/Side</span>
         <button class="fp-btn adj-btn" id="nudge-left-btn" disabled>◀</button>
         <button class="fp-btn adj-btn" id="nudge-right-btn" disabled>▶</button>
       </div>
@@ -666,12 +665,12 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       </div>
       <div class="fp-row">
         <span class="fp-label">↻ Rotate</span>
-        <button class="fp-btn adj-btn" id="rot-left-btn" disabled>◀</button>
-        <button class="fp-btn adj-btn" id="rot-right-btn" disabled>▶</button>
+        <button class="fp-btn adj-btn" id="rot-left-btn" disabled style="font-size:2rem">↶</button>
+        <button class="fp-btn adj-btn" id="rot-right-btn" disabled style="font-size:2rem">↷</button>
       </div>
       <div class="fp-row">
         <span class="fp-label">Reset</span>
-        <button class="fp-btn adj-btn" id="pos-reset-btn" disabled>↺</button>
+        <button class="fp-btn adj-btn" id="pos-reset-btn" disabled style="font-size:1.5rem">↺</button>
       </div>
       <div class="fp-row">
         <span class="fp-label">Crosshair</span>
@@ -742,9 +741,8 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <button class="fp-btn adj-btn" id="auto-color-btn" disabled style="font-size:0.65rem;font-weight:700;letter-spacing:0.04em;padding:3px 8px">Auto</button>
         <button class="fp-btn adj-btn" id="adj-reset-btn" disabled style="font-size:1.8rem;line-height:1;padding:0 6px">↺</button>
       </div>
-      <div class="fp-row" style="margin-top:6px">
-        <span class="fp-label"></span>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+      <div class="fp-row" style="margin-top:-2px;justify-content:center">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
           <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">ORIGINAL</span>
           <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;white-space:nowrap;width:120px !important;height:29px !important;padding:0 !important">👁️ COMPARE</button>
           <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">CURRENT</span>
@@ -1044,7 +1042,7 @@ async function onSkinFile(file) {
         sb.classList.add('drawer-open');
         if (lbl) lbl.textContent = '▼ Tap to Close';
       }
-    }, 1000);
+    }, 500);
   }
 }
 
@@ -1356,6 +1354,7 @@ document.querySelectorAll('.more-info-btn').forEach(b => b.addEventListener('cli
   const overlay  = document.getElementById('more-info-overlay');
   const closeBtn = document.getElementById('mip-close');
   const buyReady = S.hasSkin && S.hasFace;
+  const backBtn = document.getElementById('mip-back-btn');
   if (buyReady) {
     closeBtn.textContent = '🎁 Buy Now!';
     closeBtn.style.background = '#e85d00';
@@ -1363,10 +1362,12 @@ document.querySelectorAll('.more-info-btn').forEach(b => b.addEventListener('cli
       overlay.classList.remove('show');
       window.location.href = 'https://www.redlavatoys.com/products/applyyourface-com';
     };
+    backBtn.style.display = '';
   } else {
     closeBtn.textContent = 'Got It — Let\'s Make One!';
     closeBtn.style.background = '';
     closeBtn.onclick = () => overlay.classList.remove('show');
+    backBtn.style.display = 'none';
   }
   overlay.classList.add('show');
 }));
@@ -1498,6 +1499,7 @@ function setControlsOpen(open) {
     ch.classList.remove('on');
     document.getElementById('crosshair-btn').style.background = '';
     document.getElementById('crosshair-btn').style.color = '';
+    markDirty();
   }
 }
 function controlsOpen() { return document.querySelector('.viewer-wrap').classList.contains('controls-open'); }
@@ -1871,7 +1873,10 @@ function updateButtons(){
         <li>Glow-in-the-Dark sword for night time adventures!</li>
       </ul>
       <img class="mip-accessories" src="/assets/Accessories.jpg?v=2" alt="What's included">
-      <button class="mip-close" id="mip-close">Got It — Let's Make One!</button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px">
+        <button class="mip-close" id="mip-close" style="margin:0">Got It — Let's Make One!</button>
+        <button id="mip-back-btn" onclick="document.getElementById('more-info-overlay').classList.remove('show')" style="padding:5px 16px;font-size:0.72rem;font-weight:700;border:1px solid #888;border-radius:16px;background:#333;color:#ccc;cursor:pointer;white-space:nowrap;margin-left:30px">Back</button>
+      </div>
     </div>
   </div>
 </div>
