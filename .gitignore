@@ -3,7 +3,3 @@ __pycache__/
 *.pyc
 config.ini
 ImagesForClaude/
-Skins/
-*.png
-*.jpg
-*.jpeg
