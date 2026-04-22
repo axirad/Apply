@@ -15,6 +15,7 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background: var(--bg); color: var(--text);
   height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
 }
 .layout {
   display: flex; flex: 1; overflow: hidden;
@@ -783,6 +784,34 @@ const S = {
 
 function getFaceScale() { return S.faceBaseScale * S.faceScalePct / 100; }
 
+// Safari < 18 doesn't support ctx.filter — detect once and use pixel fallback
+const SUPPORTS_CTX_FILTER = (() => {
+  const t = document.createElement('canvas').getContext('2d');
+  t.filter = 'brightness(2)';
+  return t.filter === 'brightness(2)';
+})();
+
+function _applyPixelFilters(data, bright, sat, hueDeg) {
+  const cosH = Math.cos(hueDeg * Math.PI / 180);
+  const sinH = Math.sin(hueDeg * Math.PI / 180);
+  const doHue = hueDeg !== 0;
+  for (let i = 0; i < data.length; i += 4) {
+    let r = data[i] / 255, g = data[i+1] / 255, b = data[i+2] / 255;
+    r = Math.min(1, r * bright); g = Math.min(1, g * bright); b = Math.min(1, b * bright);
+    const lum = 0.2126*r + 0.7152*g + 0.0722*b;
+    r = Math.max(0, Math.min(1, lum + sat*(r-lum)));
+    g = Math.max(0, Math.min(1, lum + sat*(g-lum)));
+    b = Math.max(0, Math.min(1, lum + sat*(b-lum)));
+    if (doHue) {
+      const nr = r*(0.213+0.787*cosH-0.213*sinH) + g*(0.715-0.715*cosH-0.715*sinH) + b*(0.072-0.072*cosH+0.928*sinH);
+      const ng = r*(0.213-0.213*cosH+0.143*sinH) + g*(0.715+0.285*cosH+0.140*sinH) + b*(0.072-0.072*cosH-0.283*sinH);
+      const nb = r*(0.213-0.213*cosH-0.787*sinH) + g*(0.715-0.715*cosH+0.715*sinH) + b*(0.072+0.928*cosH+0.072*sinH);
+      r = Math.max(0, Math.min(1, nr)); g = Math.max(0, Math.min(1, ng)); b = Math.max(0, Math.min(1, nb));
+    }
+    data[i] = r*255; data[i+1] = g*255; data[i+2] = b*255;
+  }
+}
+
 // ── skinview3d ────────────────────────────────────────────────────────────────
 const viewerWrap = document.querySelector('.viewer-wrap');
 const skinCanvas = document.getElementById('skin-canvas');
@@ -792,7 +821,7 @@ window.addEventListener('load', () => {
   viewer = new skinview3d.SkinViewer({
     canvas: skinCanvas, width: viewerWrap.clientWidth, height: viewerWrap.clientHeight,
   });
-  viewer.zoom       = 0.85;
+  viewer.zoom       = window.innerWidth <= 768 ? 0.6 : 0.85;
   viewer.animation  = null;
   viewer.controls.enableZoom = true;
   viewer.controls.enableRotate = true;
@@ -1205,8 +1234,25 @@ function compositeFace() {
   ctx.translate(CTX.x + S.faceX, CTX.y + S.faceY);
   if (S.faceRot) ctx.rotate(S.faceRot * Math.PI / 180);
   ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-  ctx.filter = `brightness(${S.faceBright??1}) saturate(${S.faceSat??1}) hue-rotate(${(S.faceWarmth??0)*-30}deg)`;
-  ctx.drawImage(S.faceCur, -fw/2, -fh/2, fw, fh);
+  const _bright = S.faceBright??1, _sat = S.faceSat??1, _hueDeg = (S.faceWarmth??0)*-30;
+  const _noAdj = _bright===1 && _sat===1 && _hueDeg===0;
+  if (SUPPORTS_CTX_FILTER && !_noAdj) {
+    ctx.filter = `brightness(${_bright}) saturate(${_sat}) hue-rotate(${_hueDeg}deg)`;
+    ctx.drawImage(S.faceCur, -fw/2, -fh/2, fw, fh);
+    ctx.filter = 'none';
+  } else if (!_noAdj) {
+    const tw = Math.ceil(fw), th = Math.ceil(fh);
+    const tmp = document.createElement('canvas'); tmp.width = tw; tmp.height = th;
+    const tCtx = tmp.getContext('2d');
+    tCtx.imageSmoothingEnabled = true; tCtx.imageSmoothingQuality = 'high';
+    tCtx.drawImage(S.faceCur, 0, 0, tw, th);
+    const id = tCtx.getImageData(0, 0, tw, th);
+    _applyPixelFilters(id.data, _bright, _sat, _hueDeg);
+    tCtx.putImageData(id, 0, 0);
+    ctx.drawImage(tmp, -fw/2, -fh/2);
+  } else {
+    ctx.drawImage(S.faceCur, -fw/2, -fh/2, fw, fh);
+  }
   ctx.restore();
 }
 
