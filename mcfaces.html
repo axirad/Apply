@@ -258,7 +258,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 }
 .btn-anim:hover { background: #333; }
 .btn-anim.on    { background: #1e3a5f; color: #7ab8e8; border-color: #3a6a9f; }
-.viewer-left-box { position: absolute; left: 100px; bottom: 100px; z-index: 149; display: flex; flex-direction: column; gap: 8px; }
+.viewer-left-box { position: absolute; left: 50px; bottom: 110px; z-index: 149; display: flex; flex-direction: column; gap: 8px; transform: scale(0.75); transform-origin: bottom left; }
 .anim-wrap { display: flex; flex-direction: column; gap: 4px; }
 .mouse-legend { display:flex; gap:12px; justify-content:center; padding-bottom:8px; border-bottom:1px solid #666; margin-bottom:2px; }
 .mouse-ctrl   { display:flex; flex-direction:column; align-items:center; gap:5px; }
@@ -295,7 +295,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
 /* ── Face Adjustments button ── */
 .show-controls-wrap {
-  position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
   display: none; align-items: center; justify-content: center; z-index: 5;
 }
 .viewer-wrap.face-loaded .show-controls-wrap { display: flex; }
@@ -308,7 +308,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 .show-controls-btn.open { border-color: #5aba6a; color: #5aba6a; }
 
 .viewer-brand {
-  position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
+  position: absolute; top: 0px; left: 50%; transform: translateX(-50%);
   font-size: 1.6rem; font-weight: 900; letter-spacing: 0.05em; white-space: nowrap;
   background: linear-gradient(90deg, #ff2200 0%, #ff5500 40%, #ff9500 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -494,7 +494,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
   /* Viewer left box (mouse legend + animate) — fixed on mobile since viewer is fixed */
   .viewer-left-box {
-    position: fixed !important; bottom: 100px; left: 100px; z-index: 149;
+    position: fixed !important; bottom: 110px; left: 50px; z-index: 149;
     pointer-events: auto !important;
   }
   .layout:has(.sidebar.drawer-open) .viewer-left-box { display: none !important; }
