@@ -1498,6 +1498,7 @@ function setControlsOpen(open) {
     ch.classList.remove('on');
     document.getElementById('crosshair-btn').style.background = '';
     document.getElementById('crosshair-btn').style.color = '';
+    markDirty();
   }
 }
 function controlsOpen() { return document.querySelector('.viewer-wrap').classList.contains('controls-open'); }
