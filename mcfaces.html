@@ -493,10 +493,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
   /* Animate trio — always visible outside face adjustments */
   .anim-wrap {
-    position: fixed !important; bottom: 120px; left: calc(25vw + 30px); transform: translateX(-50%); z-index: 149;
+    position: fixed !important; bottom: 120px; left: 20px; z-index: 149;
     flex-direction: column; gap: 6px; pointer-events: auto !important;
   }
   .layout:has(.sidebar.drawer-open) .anim-wrap { display: none !important; }
+  .viewer-wrap.controls-open .anim-wrap { display: none !important; }
   /* active step always fully visible */
   .sidebar.drawer-open .step.step-active { opacity: 1 !important; }
 
@@ -715,6 +716,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
     <!-- Photo adjustments panel (right side) -->
     <div class="photo-panel">
+      <div class="fp-title-bar">Color Correction</div>
       <div class="fp-row">
         <span class="fp-label">Brightness</span>
         <button class="fp-btn adj-btn" id="bright-down-btn" disabled>−</button>
