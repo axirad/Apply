@@ -221,7 +221,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
 /* ── Floating control panels — hidden until "Adjust Face" toggled ── */
 .left-controls {
-  position: absolute; right: calc(50% + 160px); bottom: 110px;
+  position: absolute; right: calc(50% + 145px); bottom: 110px;
   display: flex; flex-direction: column; gap: 10px;
   opacity: 0; pointer-events: none;
   transition: opacity 0.2s;
@@ -666,8 +666,8 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       </div>
       <div class="fp-row">
         <span class="fp-label">↻ Rotate</span>
-        <button class="fp-btn adj-btn" id="rot-left-btn" disabled>↶</button>
-        <button class="fp-btn adj-btn" id="rot-right-btn" disabled>↷</button>
+        <button class="fp-btn adj-btn" id="rot-left-btn" disabled style="font-size:2rem">↶</button>
+        <button class="fp-btn adj-btn" id="rot-right-btn" disabled style="font-size:2rem">↷</button>
       </div>
       <div class="fp-row">
         <span class="fp-label">Reset</span>
