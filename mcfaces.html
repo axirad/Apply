@@ -272,6 +272,12 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   display: flex; flex-direction: column; gap: 7px; user-select: none;
   box-shadow: 0 4px 18px rgba(0,0,0,0.6);
 }
+.fp-title-bar {
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #7ab8e8;
+  text-align: center; padding-bottom: 4px;
+  border-bottom: 1px solid #444; margin-bottom: 2px;
+}
 .fp-row   { display: flex; align-items: center; gap: 6px; }
 .fp-label { font-size: 1rem; color: #fff; width: 72px; font-weight: 600; }
 .fp-btn {
@@ -491,7 +497,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     flex-direction: column; gap: 6px; pointer-events: auto !important;
   }
   .layout:has(.sidebar.drawer-open) .anim-wrap { display: none !important; }
-  .viewer-wrap.controls-open .anim-wrap { display: none !important; }
   /* active step always fully visible */
   .sidebar.drawer-open .step.step-active { opacity: 1 !important; }
 
@@ -667,6 +672,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
     <!-- Face position panel (pinned below animate box) -->
     <div class="face-panel">
+      <div class="fp-title-bar">Move Face</div>
       <div class="fp-row desktop-only">
         <span class="fp-label">Face Size</span>
         <button class="fp-btn adj-btn" id="size-down-btn" disabled>−</button>
