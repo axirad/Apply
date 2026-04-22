@@ -258,8 +258,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 }
 .btn-anim:hover { background: #333; }
 .btn-anim.on    { background: #1e3a5f; color: #7ab8e8; border-color: #3a6a9f; }
-.anim-wrap { display: flex; flex-direction: column; gap: 4px; position: fixed; left: 50px; bottom: 50px; z-index: 149; }
-.viewer-wrap.controls-open .anim-wrap { display: none !important; }
+.anim-wrap { display: flex; flex-direction: column; gap: 4px; position: fixed; left: 100px; bottom: 100px; z-index: 149; }
 .mouse-legend { display:flex; gap:12px; justify-content:center; padding-bottom:8px; border-bottom:1px solid #666; margin-bottom:2px; }
 .mouse-ctrl   { display:flex; flex-direction:column; align-items:center; gap:5px; }
 .mouse-label  { font-size:0.63rem; color:#ccc; letter-spacing:0.02em; }
@@ -492,12 +491,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   .viewer-controls { display: none !important; }
   .mouse-legend { display: none !important; }
 
-  /* Animate trio — fixed lower left, always visible */
+  /* Animate trio — fixed lower left on mobile */
   .anim-wrap {
-    position: fixed !important; bottom: 50px; left: 50px; z-index: 149;
+    position: fixed !important; bottom: 100px; left: 100px; z-index: 149;
     flex-direction: column; gap: 6px; pointer-events: auto !important;
   }
   .layout:has(.sidebar.drawer-open) .anim-wrap { display: none !important; }
+  .viewer-wrap.controls-open .anim-wrap { display: none !important; }
   /* active step always fully visible */
   .sidebar.drawer-open .step.step-active { opacity: 1 !important; }
 
@@ -667,17 +667,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         </div>
       </div>
     </div>
-    <div class="anim-wrap" id="anim-wrap">
-      <button class="btn-anim" id="anim-btn">▶ Animate</button>
-      <button class="btn-anim" id="walk-btn"><span style="font-size:1.6em;line-height:1">🚶</span> Walk Pose</button>
-      <button class="btn-anim" id="default-btn"><span style="font-size:1.6em;line-height:1">🧍</span> Default Pose</button>
-      <div class="fp-row" style="margin-top:4px;border-top:1px solid #444;padding-top:6px">
-        <span class="fp-label">↻ Rotate</span>
-        <button class="fp-btn adj-btn" id="rot-left-btn" disabled>◀</button>
-        <button class="fp-btn adj-btn" id="rot-right-btn" disabled>▶</button>
-      </div>
-    </div>
-
     <!-- Face position panel (pinned below animate box) -->
     <div class="face-panel">
       <div class="fp-title-bar">Move Face</div>
@@ -714,6 +703,17 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       </div>
     </div>
     </div><!-- end left-controls -->
+
+    <div class="anim-wrap" id="anim-wrap">
+      <button class="btn-anim" id="anim-btn">▶ Animate</button>
+      <button class="btn-anim" id="walk-btn"><span style="font-size:1.6em;line-height:1">🚶</span> Walk Pose</button>
+      <button class="btn-anim" id="default-btn"><span style="font-size:1.6em;line-height:1">🧍</span> Default Pose</button>
+      <div class="fp-row" style="margin-top:4px;border-top:1px solid #444;padding-top:6px">
+        <span class="fp-label">↻ Rotate</span>
+        <button class="fp-btn adj-btn" id="rot-left-btn" disabled>◀</button>
+        <button class="fp-btn adj-btn" id="rot-right-btn" disabled>▶</button>
+      </div>
+    </div>
 
     <!-- Photo adjustments panel (right side) -->
     <div class="photo-panel">
