@@ -1467,7 +1467,7 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
 function setControlsOpen(open) {
   const btn = document.getElementById('show-controls-btn');
   document.querySelector('.viewer-wrap').classList.toggle('controls-open', open);
-  btn.textContent = open ? '✓ Done' : '🎨 Face Adjustments';
+  btn.textContent = open ? '✓ Adjustment Done' : '🎨 Face Adjustments';
   btn.classList.toggle('open', open);
   if (viewer) {
     viewer.controls.enableRotate = !open;
