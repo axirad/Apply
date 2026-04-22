@@ -291,7 +291,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 .fp-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .fp-btn.def { width: 56px; font-size: 0.7rem; }
 .photo-panel .fp-label { width: 80px; }
-.photo-panel .fp-btn { width: 44px; height: 34px; font-size: 1.1rem; }
+.photo-panel .fp-btn { width: 44px; height: 29px; font-size: 1.1rem; }
 
 /* ── Face Adjustments button ── */
 .show-controls-wrap {
@@ -737,14 +737,12 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <button class="fp-btn adj-btn" id="cool-btn" disabled>−</button>
         <button class="fp-btn adj-btn" id="warm-btn" disabled>+</button>
       </div>
-      <div class="fp-row">
-        <span class="fp-label"></span>
+      <div class="fp-row" style="justify-content:center">
         <button class="fp-btn adj-btn" id="auto-color-btn" disabled style="font-size:0.65rem;font-weight:700;letter-spacing:0.04em;padding:3px 8px">Auto</button>
         <button class="fp-btn adj-btn" id="adj-reset-btn" disabled style="font-size:1.8rem;line-height:1;padding:0 6px">↺</button>
       </div>
-      <div class="fp-row" style="margin-top:6px">
-        <span class="fp-label"></span>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+      <div class="fp-row" style="margin-top:6px;justify-content:center">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
           <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">ORIGINAL</span>
           <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;white-space:nowrap;width:120px !important;height:29px !important;padding:0 !important">👁️ COMPARE</button>
           <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">CURRENT</span>
