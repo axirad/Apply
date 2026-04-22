@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FunSun Face Placer</title>
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --surface: #16213e;
+    --accent: #e94560;
+    --text: #eaeaea;
+    --muted: #888;
+    --border: #2e2e48;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.05em; }
+  header p  { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+  .main {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    max-width: 980px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .controls-panel {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .preview-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* Upload zone — file input is hidden separately, not inside the zone */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--accent);
+    background: rgba(233,69,96,0.06);
+  }
+  .upload-zone .icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .upload-zone .main-text { font-size: 0.85rem; }
+  .upload-zone .sub-text  { font-size: 0.72rem; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+  .browse-link {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  /* Mode toggle */
+  .mode-btns {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: all 0.15s;
+    line-height: 1.2;
+  }
+  .mode-btn.active { background: var(--accent); color: white; font-weight: 600; }
+
+  /* Sliders */
+  .slider-wrap { display: flex; flex-direction: column; gap: 5px; }
+  .slider-wrap .row { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); }
+  .slider-wrap .val { color: var(--text); font-weight: 600; }
+  input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    padding: 9px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .btn:hover:not(:disabled) { opacity: 0.85; }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-secondary { background: #2a2a48; color: var(--text); }
+  .btn-primary   { background: var(--accent); color: white; }
+  .btn-green     { background: #14532d; color: #4ade80; border: 1px solid #166534; }
+
+  /* Progress */
+  .progress-wrap { display: none; flex-direction: column; gap: 4px; margin-top: 2px; }
+  .progress-wrap.visible { display: flex; }
+  .progress-track { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill  { height: 100%; width: 0%; background: #4ade80; border-radius: 3px; transition: width 0.2s; }
+  .progress-label { font-size: 0.68rem; color: var(--muted); text-align: center; }
+
+  /* BG toggle */
+  .bg-toggle { display: none; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--muted); cursor: pointer; user-select: none; margin-top: 2px; }
+  .bg-toggle.visible { display: flex; }
+  .bg-toggle input { accent-color: var(--accent); cursor: pointer; }
+
+  /* Canvas */
+  #preview-canvas { border-radius: 4px; cursor: grab; touch-action: none; display: block; }
+  #preview-canvas.dragging { cursor: grabbing; }
+
+  /* Status badge */
+  .status { font-size: 0.72rem; padding: 3px 10px; border-radius: 20px; background: #222240; }
+  .status.ok   { color: #4ade80; }
+  .status.busy { color: #facc15; }
+  .status.idle { color: var(--muted); }
+
+  .preview-header { display: flex; align-items: center; gap: 10px; width: 100%; }
+  .hint { font-size: 0.72rem; color: var(--muted); text-align: center; }
+
+  @media (max-width: 620px) {
+    .controls-panel { width: 100%; }
+    .main { padding: 12px; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hidden file input — lives outside the drop zone so it can't intercept keyboard/paste events -->
+<input type="file" id="file-input" accept="image/*" style="display:none">
+
+<header>
+  <h1>FunSun Face Placer</h1>
+  <p>Upload a photo · position your face · save the result</p>
+</header>
+
+<div class="main">
+
+  <!-- ── Controls ─────────────────────────────────────── -->
+  <div class="panel controls-panel">
+
+    <div>
+      <div class="label">1. Upload Photo</div>
+      <div class="upload-zone" id="upload-zone">
+        <div class="icon">📷</div>
+        <div class="main-text">Drop photo here</div>
+        <div class="sub-text">
+          or <button class="browse-link" id="browse-btn">click to browse</button><br>
+          Ctrl+V to paste from clipboard
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="label">2. Background</div>
+      <button class="btn btn-green" id="rmbg-btn" disabled>Remove Background</button>
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-label" id="progress-label">Preparing…</div>
+      </div>
+      <label class="bg-toggle" id="bg-toggle">
+        <input type="checkbox" id="show-original"> Show original
+      </label>
+    </div>
+
+    <div>
+      <div class="label">3. Crop to Head</div>
+      <button class="btn btn-secondary" id="crop-head-btn" disabled>Crop to Head</button>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;line-height:1.5">
+        Trims to face + hair.<br>Run <b style="color:var(--text)">after</b> background removal.
+      </div>
+    </div>
+
+    <div>
+      <div class="label">4. Crop Mode</div>
+      <div class="mode-btns">
+        <button class="mode-btn active" data-mode="fill">Crop to Fill</button>
+        <button class="mode-btn"        data-mode="fit" >Fit Whole Face</button>
+      </div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;line-height:1.5">
+        <b style="color:var(--text)">Fill</b> = face covers full square<br>
+        <b style="color:var(--text)">Fit</b> = whole face visible
+      </div>
+    </div>
+
+    <div>
+      <div class="label">5. Fine-tune</div>
+      <div class="slider-wrap">
+        <div class="row"><span>Scale</span><span class="val" id="scale-val">100%</span></div>
+        <input type="range" id="scale-slider" min="20" max="400" value="100">
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn btn-secondary" id="reset-btn"  disabled>Reset Position</button>
+      <button class="btn btn-primary"   id="export-btn" disabled>Save Face PNG</button>
+    </div>
+
+  </div>
+
+  <!-- ── Preview ──────────────────────────────────────── -->
+  <div class="panel preview-panel">
+    <div class="preview-header">
+      <div class="label" style="margin:0">Preview</div>
+      <div class="status idle" id="status">No photo loaded</div>
+    </div>
+    <canvas id="preview-canvas" width="460" height="460"></canvas>
+    <div class="hint">Drag to reposition &nbsp;·&nbsp; Scroll or pinch to zoom</div>
+  </div>
+
+</div>
+
+<!-- Transformers.js — high-quality background removal via RMBG-1.4 model -->
+<script type="module">
+  try {
+    const { AutoModel, AutoProcessor, RawImage, env } =
+      await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.1.0');
+    env.backends.onnx.wasm.proxy = false; // required when running from file://
+    window._tf = { AutoModel, AutoProcessor, RawImage };
+  } catch(e) {
+    console.warn('[FacePlacer] Transformers.js failed to load:', e.message);
+  }
+</script>
+
+<script>
+// ─── State ────────────────────────────────────────────────────────────────────
+const state = {
+  photo:         null,
+  photoW:        0,
+  photoH:        0,
+  originalPhoto: null,
+  cleanPhoto:    null,
+  showOriginal:  false,
+  offsetX:       0,
+  offsetY:       0,
+  scale:         1,
+  mode:          'fill',
+  faceBox:       null,
+  originalBlob:  null,
+};
+
+// ─── Canvas ───────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('preview-canvas');
+const ctx    = canvas.getContext('2d');
+const CS = 460;
+const F  = { x: 90, y: 90, w: 280, h: 280 };
+const ISO = 26;
+
+let checkerPattern = null;
+function getChecker() {
+  if (checkerPattern) return checkerPattern;
+  const sz = 10;
+  const c  = document.createElement('canvas');
+  c.width = c.height = sz * 2;
+  const cx = c.getContext('2d');
+  cx.fillStyle = '#999'; cx.fillRect(0, 0, sz*2, sz*2);
+  cx.fillStyle = '#ccc'; cx.fillRect(0, 0, sz, sz); cx.fillRect(sz, sz, sz, sz);
+  checkerPattern = ctx.createPattern(c, 'repeat');
+  return checkerPattern;
+}
+
+// ─── Rendering ────────────────────────────────────────────────────────────────
+function drawCubeShell() {
+  ctx.beginPath();
+  ctx.moveTo(F.x, F.y);
+  ctx.lineTo(F.x + ISO, F.y - ISO);
+  ctx.lineTo(F.x + F.w + ISO, F.y - ISO);
+  ctx.lineTo(F.x + F.w, F.y);
+  ctx.closePath();
+  ctx.fillStyle = '#7a6a5a'; ctx.fill();
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(F.x + F.w, F.y);
+  ctx.lineTo(F.x + F.w + ISO, F.y - ISO);
+  ctx.lineTo(F.x + F.w + ISO, F.y + F.h - ISO);
+  ctx.lineTo(F.x + F.w, F.y + F.h);
+  ctx.closePath();
+  ctx.fillStyle = '#5a4a3a'; ctx.fill();
+  ctx.strokeStyle = '#222'; ctx.stroke();
+
+  ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 3;
+  ctx.strokeRect(F.x, F.y, F.w, F.h);
+
+  const cs = 9; ctx.fillStyle = '#1a1a2e';
+  [[F.x, F.y], [F.x+F.w-cs, F.y], [F.x, F.y+F.h-cs], [F.x+F.w-cs, F.y+F.h-cs]]
+    .forEach(([bx,by]) => ctx.fillRect(bx, by, cs, cs));
+}
+
+function getBaseScale() {
+  if (!state.photo) return 1;
+  return state.mode === 'fill'
+    ? Math.max(F.w / state.photoW, F.h / state.photoH)
+    : Math.min(F.w / state.photoW, F.h / state.photoH);
+}
+
+function render() {
+  ctx.clearRect(0, 0, CS, CS);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, CS, CS);
+
+  if (!state.photo) {
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(F.x, F.y, F.w, F.h);
+    drawCubeShell();
+    ctx.fillStyle = '#2e2e48';
+    ctx.font = '14px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Upload a photo', F.x + F.w/2, F.y + F.h/2 - 12);
+    ctx.fillText('to get started',  F.x + F.w/2, F.y + F.h/2 + 12);
+    return;
+  }
+
+  const totalScale = getBaseScale() * state.scale;
+  const drawW = state.photoW * totalScale;
+  const drawH = state.photoH * totalScale;
+  const cx = F.x + F.w / 2;
+  const cy = F.y + F.h / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(F.x, F.y, F.w, F.h);
+  ctx.clip();
+
+  if (state.cleanPhoto && !state.showOriginal) {
+    ctx.fillStyle = getChecker();
+    ctx.fillRect(F.x, F.y, F.w, F.h);
+  }
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(state.photo, cx - drawW/2 + state.offsetX, cy - drawH/2 + state.offsetY, drawW, drawH);
+  ctx.restore();
+
+  drawCubeShell();
+}
+
+// ─── Photo loading ────────────────────────────────────────────────────────────
+function blobToImage(blob) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = URL.createObjectURL(blob);
+  });
+}
+
+async function loadPhoto(file) {
+  state.originalBlob  = file;
+  state.cleanPhoto    = null;
+  state.showOriginal  = false;
+  state.faceBox       = null;
+
+  const img = await blobToImage(file);
+  state.originalPhoto = img;
+  applyPhoto(img);
+
+  syncSlider(1);
+  document.getElementById('reset-btn').disabled      = false;
+  document.getElementById('export-btn').disabled     = false;
+  document.getElementById('rmbg-btn').disabled       = false;
+  document.getElementById('crop-head-btn').disabled  = false;
+  document.getElementById('bg-toggle').classList.remove('visible');
+  document.getElementById('show-original').checked = false;
+
+  render();
+  detectFace(img);
+}
+
+function applyPhoto(img, keepPosition) {
+  if (!keepPosition) { state.offsetX = 0; state.offsetY = 0; state.scale = 1; }
+  state.photo  = img;
+  state.photoW = img.naturalWidth;
+  state.photoH = img.naturalHeight;
+}
+
+// ─── Background removal (Transformers.js + RMBG-1.4) ─────────────────────────
+// Model and processor are cached after first load (~176 MB, one-time download)
+let _rmbgModel     = null;
+let _rmbgProcessor = null;
+
+async function ensureModel(fill, lbl) {
+  if (_rmbgModel) return;
+
+  const { AutoModel, AutoProcessor } = window._tf;
+
+  const progressCb = p => {
+    if (p.status === 'downloading') {
+      const pct = Math.round(p.progress ?? 0);
+      fill.style.width = pct + '%';
+      lbl.textContent  = `Downloading model… ${pct}%  (176 MB — first time only)`;
+    } else if (p.status === 'loading') {
+      fill.style.width = '95%';
+      lbl.textContent  = 'Loading model into memory…';
+    }
+  };
+
+  _rmbgProcessor = await AutoProcessor.from_pretrained('briaai/RMBG-1.4', {
+    config: {
+      do_normalize:          true,
+      do_pad:                false,
+      do_rescale:            true,
+      do_resize:             true,
+      image_mean:            [0.5, 0.5, 0.5],
+      image_std:             [1, 1, 1],
+      feature_extractor_type:'ImageFeatureExtractor',
+      resample:              2,
+      rescale_factor:        0.00392156862745098,
+      size:                  { width: 1024, height: 1024 },
+    },
+    progress_callback: progressCb,
+  });
+
+  _rmbgModel = await AutoModel.from_pretrained('briaai/RMBG-1.4', {
+    config:            { model_type: 'custom' },
+    progress_callback: progressCb,
+  });
+}
+
+document.getElementById('rmbg-btn').addEventListener('click', async () => {
+  const btn    = document.getElementById('rmbg-btn');
+  const wrap   = document.getElementById('progress-wrap');
+  const fill   = document.getElementById('progress-fill');
+  const lbl    = document.getElementById('progress-label');
+  const toggle = document.getElementById('bg-toggle');
+
+  btn.disabled = true;
+  wrap.classList.add('visible');
+  fill.style.width = '0%';
+  lbl.textContent  = 'Preparing…';
+  setStatus('Removing background…', 'busy');
+
+  try {
+    if (!window._tf) throw new Error('Transformers library not loaded — check internet and refresh.');
+
+    await ensureModel(fill, lbl);
+
+    fill.style.width = '97%';
+    lbl.textContent  = 'Running inference…';
+
+    const { RawImage } = window._tf;
+    const w = state.originalPhoto.naturalWidth;
+    const h = state.originalPhoto.naturalHeight;
+
+    // Convert HTMLImageElement → data URL → RawImage
+    const tmp = document.createElement('canvas');
+    tmp.width = w; tmp.height = h;
+    tmp.getContext('2d').drawImage(state.originalPhoto, 0, 0);
+    const image = await RawImage.fromURL(tmp.toDataURL());
+
+    const { pixel_values } = await _rmbgProcessor(image);
+    const { output }       = await _rmbgModel({ input: pixel_values });
+
+    // Resize mask back to original image dimensions
+    const mask = await RawImage.fromTensor(output[0].mul(255).to('uint8'))
+                               .resize(w, h);
+
+    // Apply mask as alpha channel
+    const out = document.createElement('canvas');
+    out.width = w; out.height = h;
+    const oc  = out.getContext('2d');
+    oc.drawImage(state.originalPhoto, 0, 0);
+    const imgData = oc.getImageData(0, 0, w, h);
+    for (let i = 0; i < mask.data.length; i++) {
+      imgData.data[4 * i + 3] = mask.data[i];
+    }
+    oc.putImageData(imgData, 0, 0);
+
+    const resultBlob = await new Promise(res => out.toBlob(res, 'image/png'));
+    fill.style.width = '100%';
+
+    const cleanImg = await blobToImage(resultBlob);
+    state.cleanPhoto   = cleanImg;
+    state.showOriginal = false;
+    applyPhoto(cleanImg, true);
+    render();
+
+    toggle.classList.add('visible');
+    wrap.classList.remove('visible');
+    setStatus('Background removed', 'ok');
+    btn.textContent = 'Re-run Removal';
+    btn.disabled    = false;
+
+  } catch (err) {
+    console.error('Background removal failed:', err);
+    wrap.classList.remove('visible');
+    lbl.textContent = '';
+    setStatus('Removal failed — ' + err.message, 'idle');
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('show-original').addEventListener('change', e => {
+  state.showOriginal = e.target.checked;
+  const img = state.showOriginal ? state.originalPhoto : state.cleanPhoto;
+  if (img) { applyPhoto(img, true); render(); }
+});
+
+// ─── Crop to head ─────────────────────────────────────────────────────────────
+
+// Analyse the silhouette of a bg-removed image to find the chin cut-off.
+// Downsamples to 300px wide first so it runs fast on large photos.
+function findHeadBox(imgElement) {
+  const AW = 300; // analysis width
+  const sw = imgElement.naturalWidth;
+  const sh = imgElement.naturalHeight;
+  const AH = Math.round(sh * AW / sw);
+  const sc = AW / sw; // scale factor
+
+  const tmp = document.createElement('canvas');
+  tmp.width = AW; tmp.height = AH;
+  tmp.getContext('2d').drawImage(imgElement, 0, 0, AW, AH);
+  const d = tmp.getContext('2d').getImageData(0, 0, AW, AH).data;
+
+  // Count non-transparent pixels per row
+  const rw = new Array(AH).fill(0);
+  for (let y = 0; y < AH; y++)
+    for (let x = 0; x < AW; x++)
+      if (d[(y * AW + x) * 4 + 3] > 20) rw[y]++;
+
+  const maxW = Math.max(...rw);
+  if (maxW === 0) return null;
+
+  const top = rw.findIndex(v => v > maxW * 0.03);
+  if (top === -1) return null;
+  let bot = AH - 1;
+  while (bot > top && rw[bot] < maxW * 0.03) bot--;
+  const pH = bot - top;
+
+  // Smooth row widths (7-row window)
+  const sm = rw.map((_, i) => {
+    let s = 0, n = 0;
+    for (let j = Math.max(0,i-3); j<=Math.min(AH-1,i+3); j++){s+=rw[j];n++;}
+    return s/n;
+  });
+
+  // Find neck: the narrowest row between 25 %–75 % of person height
+  const s0 = top + Math.floor(pH * 0.25);
+  const s1 = top + Math.floor(pH * 0.75);
+  let minW = Infinity, neckY = -1;
+  for (let y = s0; y <= s1; y++)
+    if (sm[y] < minW) { minW = sm[y]; neckY = y; }
+
+  // Accept neck only if meaningfully narrower than head/shoulder width
+  let cutY;
+  if (neckY !== -1 && minW < maxW * 0.72) {
+    // Cut slightly below the neck minimum — lands just under the chin
+    cutY = Math.min(bot, neckY + Math.floor(pH * 0.05));
+  } else {
+    // No clear neck: take top 55 % of person (headshot / already cropped photo)
+    cutY = top + Math.floor(pH * 0.55);
+  }
+
+  // Horizontal bounds across the head region only
+  let left = AW, right = 0;
+  for (let y = top; y <= cutY; y++) {
+    for (let x = 0;    x < AW; x++) if (d[(y*AW+x)*4+3]>20){left =Math.min(left, x);break;}
+    for (let x = AW-1; x >= 0; x--) if (d[(y*AW+x)*4+3]>20){right=Math.max(right,x);break;}
+  }
+
+  // Scale back to original pixel space and add small padding
+  const pad = Math.floor((cutY - top) * 0.04 / sc);
+  return {
+    x:  Math.max(0,  Math.round(left  / sc) - pad),
+    y:  Math.max(0,  Math.round(top   / sc) - pad),
+    x2: Math.min(sw, Math.round(right / sc) + pad),
+    y2: Math.min(sh, Math.round(cutY  / sc) + pad),
+  };
+}
+
+document.getElementById('crop-head-btn').addEventListener('click', async () => {
+  if (!state.photo) return;
+
+  const iw = state.photoW;
+  const ih = state.photoH;
+
+  let box = null;
+
+  // Silhouette analysis only works when background has been removed
+  if (state.cleanPhoto && !state.showOriginal) {
+    box = findHeadBox(state.photo);
+  }
+
+  let cx, cy, cw, ch;
+
+  if (box) {
+    cx = box.x; cy = box.y; cw = box.x2 - box.x; ch = box.y2 - box.y;
+  } else {
+    // Fallback: crop to exactly what is currently visible in the face square
+    const totalScale = getBaseScale() * state.scale;
+    const pcx   = iw / 2 - state.offsetX / totalScale;
+    const pcy   = ih / 2 - state.offsetY / totalScale;
+    const halfW = F.w / (2 * totalScale);
+    const halfH = F.h / (2 * totalScale);
+    const x1 = Math.max(0,  Math.floor(pcx - halfW));
+    const y1 = Math.max(0,  Math.floor(pcy - halfH));
+    const x2 = Math.min(iw, Math.ceil(pcx  + halfW));
+    const y2 = Math.min(ih, Math.ceil(pcy  + halfH));
+    cx = x1; cy = y1; cw = x2 - x1; ch = y2 - y1;
+    if (!state.cleanPhoto)
+      setStatus('Tip: remove background first for smarter crop', 'idle');
+  }
+
+  async function cropImg(img) {
+    const c = document.createElement('canvas');
+    c.width = cw; c.height = ch;
+    c.getContext('2d').drawImage(img, -cx, -cy, img.naturalWidth, img.naturalHeight);
+    return blobToImage(await new Promise(r => c.toBlob(r, 'image/png')));
+  }
+
+  const newOriginal = await cropImg(state.originalPhoto);
+  const newCurrent  = await cropImg(state.photo);
+
+  state.originalBlob = await new Promise(r => {
+    const c = document.createElement('canvas');
+    c.width = cw; c.height = ch;
+    c.getContext('2d').drawImage(newOriginal, 0, 0);
+    c.toBlob(r, 'image/png');
+  });
+  state.originalPhoto = newOriginal;
+  if (state.cleanPhoto) state.cleanPhoto = newCurrent;
+  if (state.faceBox) {
+    state.faceBox = { x: state.faceBox.x-cx, y: state.faceBox.y-cy,
+                      w: state.faceBox.w, h: state.faceBox.h };
+  }
+
+  applyPhoto(newCurrent, false);
+  autoCenter();
+  render();
+  if (box) setStatus('Cropped to head', 'ok');
+});
+
+// ─── Face detection ───────────────────────────────────────────────────────────
+function detectFace(img) {
+  setStatus('Detecting face…', 'busy');
+  if (!('FaceDetector' in window)) { setStatus('Ready — position manually', 'idle'); return; }
+  const detector = new FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+  detector.detect(img).then(faces => {
+    if (!faces.length) { setStatus('No face found — position manually', 'idle'); return; }
+    const b = faces[0].boundingBox;
+    state.faceBox = { x: b.x, y: b.y, w: b.width, h: b.height };
+    autoCenter();
+    setStatus('Face detected — auto-centered', 'ok');
+  }).catch(() => setStatus('Ready — position manually', 'idle'));
+}
+
+function autoCenter() {
+  if (!state.faceBox || !state.photo) return;
+  const base = getBaseScale();
+  const box  = state.faceBox;
+  state.offsetX = -(box.x + box.w/2 - state.photoW/2) * base;
+  state.offsetY = -(box.y + box.h/2 - state.photoH/2) * base;
+  state.scale   = clamp((F.w * 0.85) / (box.w * base), 0.2, 5);
+  syncSlider(state.scale);
+  render();
+}
+
+// ─── Mouse interaction ────────────────────────────────────────────────────────
+let drag = null;
+canvas.addEventListener('mousedown', e => {
+  if (!state.photo) return;
+  drag = { mx: e.clientX, my: e.clientY, ox: state.offsetX, oy: state.offsetY };
+  canvas.classList.add('dragging');
+  e.preventDefault();
+});
+window.addEventListener('mousemove', e => {
+  if (!drag) return;
+  state.offsetX = drag.ox + (e.clientX - drag.mx);
+  state.offsetY = drag.oy + (e.clientY - drag.my);
+  render();
+});
+window.addEventListener('mouseup', () => { drag = null; canvas.classList.remove('dragging'); });
+
+canvas.addEventListener('wheel', e => {
+  if (!state.photo) return;
+  e.preventDefault();
+  state.scale = clamp(state.scale * (e.deltaY > 0 ? 0.92 : 1.09), 0.2, 5);
+  syncSlider(state.scale);
+  render();
+}, { passive: false });
+
+// ─── Touch interaction ────────────────────────────────────────────────────────
+let lastTouches = [];
+canvas.addEventListener('touchstart', e => { lastTouches = Array.from(e.touches); e.preventDefault(); }, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t = Array.from(e.touches);
+  if (t.length === 1 && lastTouches.length >= 1) {
+    state.offsetX += t[0].clientX - lastTouches[0].clientX;
+    state.offsetY += t[0].clientY - lastTouches[0].clientY;
+    render();
+  } else if (t.length === 2 && lastTouches.length >= 2) {
+    const prev = dist(lastTouches[0], lastTouches[1]);
+    const next = dist(t[0], t[1]);
+    if (prev > 0) { state.scale = clamp(state.scale * (next/prev), 0.2, 5); syncSlider(state.scale); render(); }
+  }
+  lastTouches = t;
+}, { passive: false });
+
+function dist(a, b) { return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
+
+// ─── Controls ─────────────────────────────────────────────────────────────────
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const prev = state.mode;
+    state.mode = btn.dataset.mode;
+    if (prev !== state.mode) {
+      state.offsetX = 0; state.offsetY = 0; state.scale = 1; syncSlider(1);
+      if (state.faceBox) autoCenter(); else render();
+    }
+  });
+});
+
+document.getElementById('scale-slider').addEventListener('input', e => {
+  state.scale = parseInt(e.target.value) / 100;
+  document.getElementById('scale-val').textContent = e.target.value + '%';
+  render();
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  state.offsetX = 0; state.offsetY = 0; state.scale = 1; syncSlider(1);
+  if (state.faceBox) autoCenter(); else render();
+});
+
+// ─── File input / drag-drop / paste ───────────────────────────────────────────
+const fileInput = document.getElementById('file-input');
+
+// Browse button triggers the hidden file input
+document.getElementById('browse-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  fileInput.click();
+});
+
+// Clicking the zone also triggers browse
+document.getElementById('upload-zone').addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', e => {
+  if (e.target.files[0]) loadPhoto(e.target.files[0]);
+  fileInput.value = ''; // reset so same file can be re-loaded
+});
+
+// Drag-drop on the zone
+const zone = document.getElementById('upload-zone');
+zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) loadPhoto(f);
+});
+
+// Paste anywhere on the page
+window.addEventListener('paste', e => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) { loadPhoto(item.getAsFile()); break; }
+  }
+});
+
+// ─── Export ───────────────────────────────────────────────────────────────────
+document.getElementById('export-btn').addEventListener('click', () => {
+  if (!state.photo) return;
+  const OUT = 1024;
+  const off = document.createElement('canvas');
+  off.width = off.height = OUT;
+  const oc  = off.getContext('2d');
+  const up  = OUT / F.w;
+  const tot = getBaseScale() * state.scale * up;
+  const dw  = state.photoW * tot;
+  const dh  = state.photoH * tot;
+  const cx  = OUT / 2, cy = OUT / 2;
+  oc.imageSmoothingEnabled = true;
+  oc.imageSmoothingQuality = 'high';
+  oc.drawImage(state.photo, cx - dw/2 + state.offsetX*up, cy - dh/2 + state.offsetY*up, dw, dh);
+  off.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'face_placement.png';
+    a.click();
+  }, 'image/png');
+});
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
+function syncSlider(s) {
+  const pct = Math.round(s * 100);
+  document.getElementById('scale-slider').value = pct;
+  document.getElementById('scale-val').textContent = pct + '%';
+}
+function setStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
+
+render();
+</script>
+</body>
+</html>
