@@ -1374,22 +1374,7 @@ document.getElementById('pos-reset-btn').addEventListener('click', () => {
   markDirty();
 });
 
-// Orig: hold to preview original position/rotation/scale only, release to restore
-let _origSnapshot = null;
-const _origBtn = document.getElementById('orig-btn');
-function _restoreFromOrig() {
-  if (!_origSnapshot) return;
-  Object.assign(S, _origSnapshot); _origSnapshot = null; markDirty();
-}
-_origBtn.addEventListener('pointerdown', e => {
-  if (_origBtn.disabled) return;
-  _origBtn.setPointerCapture(e.pointerId);
-  _origSnapshot = { faceX:S.faceX, faceY:S.faceY, faceRot:S.faceRot, faceScalePct:S.faceScalePct };
-  S.faceX=S.defaultX; S.faceY=S.defaultY; S.faceRot=S.defaultRot; S.faceScalePct=S.defaultScalePct;
-  markDirty();
-});
-_origBtn.addEventListener('pointerup',     _restoreFromOrig);
-_origBtn.addEventListener('pointercancel', _restoreFromOrig);
+// Orig button removed
 
 // Color Orig: hold to preview original photo adjustments, release to restore
 let _colorOrigSnapshot = null;
