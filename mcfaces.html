@@ -1037,14 +1037,10 @@ async function onSkinFile(file) {
   markDirty(); updateButtons(); hideLoading();
   setTimeout(() => { setPose(0.5, -0.5, -0.5, 0.5); }, 50);
   if (window.innerWidth <= 768 && !S.hasFace) {
-    setTimeout(() => {
-      const sb = document.getElementById('sidebar');
-      const lbl = sb.querySelector('.drawer-label');
-      if (!S.hasFace) {
-        sb.classList.add('drawer-open');
-        if (lbl) lbl.textContent = '▼ Tap to Close';
-      }
-    }, 1000);
+    const sb = document.getElementById('sidebar');
+    const lbl = sb.querySelector('.drawer-label');
+    sb.classList.add('drawer-open');
+    if (lbl) lbl.textContent = '▼ Tap to Close';
   }
 }
 
