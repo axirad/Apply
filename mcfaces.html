@@ -1354,6 +1354,7 @@ document.querySelectorAll('.more-info-btn').forEach(b => b.addEventListener('cli
   const overlay  = document.getElementById('more-info-overlay');
   const closeBtn = document.getElementById('mip-close');
   const buyReady = S.hasSkin && S.hasFace;
+  const backBtn = document.getElementById('mip-back-btn');
   if (buyReady) {
     closeBtn.textContent = '🎁 Buy Now!';
     closeBtn.style.background = '#e85d00';
@@ -1361,10 +1362,12 @@ document.querySelectorAll('.more-info-btn').forEach(b => b.addEventListener('cli
       overlay.classList.remove('show');
       window.location.href = 'https://www.redlavatoys.com/products/applyyourface-com';
     };
+    backBtn.style.display = '';
   } else {
     closeBtn.textContent = 'Got It — Let\'s Make One!';
     closeBtn.style.background = '';
     closeBtn.onclick = () => overlay.classList.remove('show');
+    backBtn.style.display = 'none';
   }
   overlay.classList.add('show');
 }));
