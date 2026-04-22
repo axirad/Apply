@@ -707,7 +707,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       <div class="fp-row">
         <span class="fp-label">Reset</span>
         <button class="fp-btn adj-btn" id="pos-reset-btn" disabled>↺</button>
-        <button class="fp-btn adj-btn" id="orig-btn" disabled style="margin-left:4px;font-size:0.58rem;font-weight:700;letter-spacing:0.03em">Orig</button>
       </div>
       <div class="fp-row">
         <span class="fp-label">Crosshair</span>
@@ -1491,6 +1490,12 @@ function setControlsOpen(open) {
     viewer.controls.enableRotate = !open;
     viewer.controls.enableZoom   = !open;
     viewer.controls.enablePan    = !open;
+  }
+  if (!open) {
+    const ch = document.getElementById('crosshair-overlay');
+    ch.classList.remove('on');
+    document.getElementById('crosshair-btn').style.background = '';
+    document.getElementById('crosshair-btn').style.color = '';
   }
 }
 function controlsOpen() { return document.querySelector('.viewer-wrap').classList.contains('controls-open'); }
