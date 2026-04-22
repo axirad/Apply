@@ -494,8 +494,8 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
   /* Viewer left box (mouse legend + animate) — fixed on mobile since viewer is fixed */
   .viewer-left-box {
-    position: fixed !important; bottom: 110px; left: 50px; z-index: 149;
-    pointer-events: auto !important;
+    position: fixed !important; bottom: 135px; left: 50px; z-index: 149;
+    pointer-events: auto !important; transform: scale(0.9375) !important; transform-origin: bottom left !important;
   }
   .layout:has(.sidebar.drawer-open) .viewer-left-box { display: none !important; }
   .viewer-wrap.controls-open .viewer-left-box { display: none !important; }
@@ -1471,7 +1471,7 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
 function setControlsOpen(open) {
   const btn = document.getElementById('show-controls-btn');
   document.querySelector('.viewer-wrap').classList.toggle('controls-open', open);
-  btn.textContent = open ? '✓ Adjustment Done' : '🎨 Face Adjustments';
+  btn.textContent = open ? '✓ Accept Adjustments' : '🎨 Face Adjustments';
   btn.classList.toggle('open', open);
   if (viewer) {
     viewer.controls.enableRotate = !open;
