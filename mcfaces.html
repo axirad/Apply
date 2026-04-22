@@ -258,7 +258,8 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 }
 .btn-anim:hover { background: #333; }
 .btn-anim.on    { background: #1e3a5f; color: #7ab8e8; border-color: #3a6a9f; }
-.anim-wrap { display: flex; flex-direction: column; gap: 4px; position: fixed; left: 100px; bottom: 100px; z-index: 149; }
+.viewer-left-box { position: absolute; left: 100px; bottom: 100px; z-index: 149; display: flex; flex-direction: column; gap: 8px; }
+.anim-wrap { display: flex; flex-direction: column; gap: 4px; }
 .mouse-legend { display:flex; gap:12px; justify-content:center; padding-bottom:8px; border-bottom:1px solid #666; margin-bottom:2px; }
 .mouse-ctrl   { display:flex; flex-direction:column; align-items:center; gap:5px; }
 .mouse-label  { font-size:0.63rem; color:#ccc; letter-spacing:0.02em; }
@@ -491,13 +492,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   .viewer-controls { display: none !important; }
   .mouse-legend { display: none !important; }
 
-  /* Animate trio — fixed lower left on mobile */
-  .anim-wrap {
+  /* Viewer left box (mouse legend + animate) — fixed on mobile since viewer is fixed */
+  .viewer-left-box {
     position: fixed !important; bottom: 100px; left: 100px; z-index: 149;
-    flex-direction: column; gap: 6px; pointer-events: auto !important;
+    pointer-events: auto !important;
   }
-  .layout:has(.sidebar.drawer-open) .anim-wrap { display: none !important; }
-  .viewer-wrap.controls-open .anim-wrap { display: none !important; }
+  .layout:has(.sidebar.drawer-open) .viewer-left-box { display: none !important; }
+  .viewer-wrap.controls-open .viewer-left-box { display: none !important; }
   /* active step always fully visible */
   .sidebar.drawer-open .step.step-active { opacity: 1 !important; }
 
@@ -637,37 +638,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       <button id="outage-dismiss" onclick="hideLoading()" style="display:none;margin-top:10px;padding:8px 24px;background:#cc2200;color:#fff;font-weight:700;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem">Got It</button>
     </div>
     <div class="left-controls">
-    <div class="viewer-controls">
-      <div class="mouse-legend">
-        <div class="mouse-ctrl">
-          <svg viewBox="0 0 20 30" width="22" height="33">
-            <rect x=".75" y=".75" width="18.5" height="28.5" rx="9" fill="#1a1a1a" stroke="#666" stroke-width="1.5"/>
-            <path d="M.75,10 Q.75,.75 10,.75 L10,14 L.75,14 Z" fill="#7ab8e8"/>
-            <line x1="10" y1=".75" x2="10" y2="14" stroke="#555" stroke-width="1"/>
-            <rect x="8" y="3" width="4" height="8" rx="2" fill="#555"/>
-          </svg>
-          <div class="mouse-label">Rotate</div>
-        </div>
-        <div class="mouse-ctrl">
-          <svg viewBox="0 0 20 30" width="22" height="33">
-            <rect x=".75" y=".75" width="18.5" height="28.5" rx="9" fill="#1a1a1a" stroke="#666" stroke-width="1.5"/>
-            <line x1="10" y1=".75" x2="10" y2="14" stroke="#555" stroke-width="1"/>
-            <rect x="8" y="3" width="4" height="8" rx="2" fill="#7ab8e8"/>
-          </svg>
-          <div class="mouse-label">Zoom</div>
-        </div>
-        <div class="mouse-ctrl">
-          <svg viewBox="0 0 20 30" width="22" height="33">
-            <rect x=".75" y=".75" width="18.5" height="28.5" rx="9" fill="#1a1a1a" stroke="#666" stroke-width="1.5"/>
-            <path d="M10,.75 Q19.25,.75 19.25,10 L19.25,14 L10,14 Z" fill="#7ab8e8"/>
-            <line x1="10" y1=".75" x2="10" y2="14" stroke="#555" stroke-width="1"/>
-            <rect x="8" y="3" width="4" height="8" rx="2" fill="#555"/>
-          </svg>
-          <div class="mouse-label">Pan</div>
-        </div>
-      </div>
-    </div>
-    <!-- Face position panel (pinned below animate box) -->
+    <!-- Face position panel -->
     <div class="face-panel">
       <div class="fp-title-bar">Move Face</div>
       <div class="fp-row desktop-only">
@@ -694,6 +665,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <span class="fp-label" style="width:auto;font-size:0.72rem;color:#7ab8e8">Pinch to Resize Face</span>
       </div>
       <div class="fp-row">
+        <span class="fp-label">↻ Rotate</span>
+        <button class="fp-btn adj-btn" id="rot-left-btn" disabled>◀</button>
+        <button class="fp-btn adj-btn" id="rot-right-btn" disabled>▶</button>
+      </div>
+      <div class="fp-row">
         <span class="fp-label">Reset</span>
         <button class="fp-btn adj-btn" id="pos-reset-btn" disabled>↺</button>
       </div>
@@ -704,14 +680,42 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     </div>
     </div><!-- end left-controls -->
 
-    <div class="anim-wrap" id="anim-wrap">
-      <button class="btn-anim" id="anim-btn">▶ Animate</button>
-      <button class="btn-anim" id="walk-btn"><span style="font-size:1.6em;line-height:1">🚶</span> Walk Pose</button>
-      <button class="btn-anim" id="default-btn"><span style="font-size:1.6em;line-height:1">🧍</span> Default Pose</button>
-      <div class="fp-row" style="margin-top:4px;border-top:1px solid #444;padding-top:6px">
-        <span class="fp-label">↻ Rotate</span>
-        <button class="fp-btn adj-btn" id="rot-left-btn" disabled>◀</button>
-        <button class="fp-btn adj-btn" id="rot-right-btn" disabled>▶</button>
+    <!-- Viewer left box: mouse legend + animate controls, always visible, 100px from viewer left/bottom -->
+    <div class="viewer-left-box">
+      <div class="viewer-controls">
+        <div class="mouse-legend">
+          <div class="mouse-ctrl">
+            <svg viewBox="0 0 20 30" width="22" height="33">
+              <rect x=".75" y=".75" width="18.5" height="28.5" rx="9" fill="#1a1a1a" stroke="#666" stroke-width="1.5"/>
+              <path d="M.75,10 Q.75,.75 10,.75 L10,14 L.75,14 Z" fill="#7ab8e8"/>
+              <line x1="10" y1=".75" x2="10" y2="14" stroke="#555" stroke-width="1"/>
+              <rect x="8" y="3" width="4" height="8" rx="2" fill="#555"/>
+            </svg>
+            <div class="mouse-label">Rotate</div>
+          </div>
+          <div class="mouse-ctrl">
+            <svg viewBox="0 0 20 30" width="22" height="33">
+              <rect x=".75" y=".75" width="18.5" height="28.5" rx="9" fill="#1a1a1a" stroke="#666" stroke-width="1.5"/>
+              <line x1="10" y1=".75" x2="10" y2="14" stroke="#555" stroke-width="1"/>
+              <rect x="8" y="3" width="4" height="8" rx="2" fill="#7ab8e8"/>
+            </svg>
+            <div class="mouse-label">Zoom</div>
+          </div>
+          <div class="mouse-ctrl">
+            <svg viewBox="0 0 20 30" width="22" height="33">
+              <rect x=".75" y=".75" width="18.5" height="28.5" rx="9" fill="#1a1a1a" stroke="#666" stroke-width="1.5"/>
+              <path d="M10,.75 Q19.25,.75 19.25,10 L19.25,14 L10,14 Z" fill="#7ab8e8"/>
+              <line x1="10" y1=".75" x2="10" y2="14" stroke="#555" stroke-width="1"/>
+              <rect x="8" y="3" width="4" height="8" rx="2" fill="#555"/>
+            </svg>
+            <div class="mouse-label">Pan</div>
+          </div>
+        </div>
+      </div>
+      <div class="anim-wrap" id="anim-wrap">
+        <button class="btn-anim" id="anim-btn">▶ Animate</button>
+        <button class="btn-anim" id="walk-btn"><span style="font-size:1.6em;line-height:1">🚶</span> Walk Pose</button>
+        <button class="btn-anim" id="default-btn"><span style="font-size:1.6em;line-height:1">🧍</span> Default Pose</button>
       </div>
     </div>
 
