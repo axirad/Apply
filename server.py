@@ -114,7 +114,7 @@ def send_alert():
             s.starttls()
             s.login(username, password)
             s.send_message(msg)
-        print('  ✓  Alert email sent to thad@redlavatoys.com')
+        print('  OK  Alert email sent to thad@redlavatoys.com')
         return jsonify({'status': 'sent'})
     except Exception as e:
         print(f'  ✗  Alert email failed: {e}')
@@ -155,5 +155,5 @@ def remove_bg():
 if __name__ == '__main__':
     key = get_api_key()
     print(f'\n  MCFaces running at  http://localhost:5000')
-    print(f'  API key: {"configured ✓" if key else "NOT FOUND — add to config.ini"}\n')
+    print(f'  API key: {"configured OK" if key else "NOT FOUND — add to config.ini"}\n')
     app.run(debug=False, port=5000)
