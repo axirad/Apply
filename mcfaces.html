@@ -9,6 +9,7 @@
   --bg: #1a1a1a; --surface: #222; --accent: #f0a500;
   --text: #e8e8e8; --muted: #999; --border: #3a3a3a;
   --green: #2d6b3a; --green-text: #5aba6a;
+  --drawer-peek: 55px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -450,7 +451,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     bottom: 0; left: 0;
     width: 100vw !important; max-width: 100vw !important;
     height: 78vh; height: 78svh; height: 78dvh;
-    transform: translateY(calc(100% - 140px - env(safe-area-inset-bottom, 0px)));
+    transform: translateY(calc(100% - var(--drawer-peek) - env(safe-area-inset-bottom, 0px)));
     transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
     border-radius: 20px 20px 0 0;
     border-top: 2px solid var(--accent);
@@ -562,11 +563,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   <div class="sidebar" id="sidebar">
     <div class="drawer-handle" id="drawer-handle">
       <div class="drawer-pill"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 4px">
-        <span style="font-size:0.72rem;color:#fff;text-align:center;line-height:1.3;flex:1;padding:0 6px">NOT AN OFFICIAL<br>MINECRAFT PRODUCT.</span>
-        <div class="drawer-label" style="white-space:nowrap;flex-shrink:0">▲ Start Over</div>
-        <span style="font-size:0.72rem;color:#fff;text-align:center;line-height:1.3;flex:1;padding:0 6px">NOT APPROVED BY OR ASSOCIATED<br>WITH MOJANG OR MICROSOFT.</span>
-      </div>
+      <div class="drawer-label" style="white-space:nowrap;text-align:center;width:100%">▲ Tap to Open</div>
     </div>
     <div class="app-title">
       <span class="desktop-disclaimer">NOT AN OFFICIAL<br>MINECRAFT PRODUCT.</span>
@@ -1899,6 +1896,20 @@ function updateButtons(){
     document.getElementById('step3').classList.remove('step-active');
   }
 }
+
+// ── Dynamic drawer peek for Safari bottom toolbar ──────────────────────────
+(function() {
+  function updateDrawerPeek() {
+    if (!window.visualViewport) return;
+    const toolbarH = window.innerHeight - window.visualViewport.height;
+    const peek = Math.max(55, toolbarH + 55);
+    document.documentElement.style.setProperty('--drawer-peek', peek + 'px');
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', updateDrawerPeek);
+  }
+  updateDrawerPeek();
+})();
 </script>
 
 <div class="toast" id="toast"></div>
