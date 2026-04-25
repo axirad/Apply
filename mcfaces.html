@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ApplyMyFace.com — Put Your Face on a Skin</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
 :root {
   --bg: #1a1a1a; --surface: #222; --accent: #f0a500;
@@ -298,8 +299,9 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 /* ── Face Adjustments button ── */
 .show-controls-wrap {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-  display: none; align-items: center; justify-content: center; z-index: 5;
+  display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; z-index: 5;
 }
+.show-controls-info { display: none; }
 .viewer-wrap.face-loaded .show-controls-wrap { display: flex; }
 .show-controls-btn {
   background: rgba(30,30,30,0.92); border: 2px solid var(--accent); color: #fff;
@@ -335,7 +337,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     position: fixed; bottom: 100px; left: calc(50% + 110px); right: auto; z-index: 149;
     transform: scale(0.6); transform-origin: bottom right;
   }
-  .viewer-buy .more-info-btn { margin-bottom: 17px; }
   /* hide when drawer is open */
   .layout:has(.sidebar.drawer-open) .viewer-buy { display: none; }
   /* hide when controls are showing */
@@ -477,6 +478,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     bottom: 100px !important;
     z-index: 200;
   }
+  .show-controls-info { display: inline-block; }
   /* hide when drawer is open */
   .layout:has(.sidebar.drawer-open) .show-controls-wrap { display: none !important; }
 
@@ -599,7 +601,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <div class="buy-cta">
       <button class="buy-btn" id="buy-btn">Buy Now</button>
       <div class="buy-price">$39.95</div>
-      <button class="more-info-btn" id="more-info-btn">🎁 What's In The Box!</button>
+      <button class="more-info-btn" id="more-info-btn">🎁 What's Included</button>
     </div>
   </div>
 
@@ -611,7 +613,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <div id="crosshair-overlay"></div>
     <!-- Floating Buy Now — mobile only, drawer closed, controls off -->
     <div class="viewer-buy">
-      <button class="more-info-btn">🎁 What's In The Box!</button>
       <button class="buy-btn">Buy Now</button>
       <div class="buy-price">$39.95</div>
     </div>
@@ -753,6 +754,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <!-- Face Adjustments button — bottom center of viewer -->
     <div class="show-controls-wrap" id="show-controls-wrap">
       <button class="show-controls-btn" id="show-controls-btn">🎨 Face Adjustments</button>
+      <button class="more-info-btn show-controls-info" id="show-controls-info-btn">🎁 What's Included</button>
     </div>
   </div>
 
