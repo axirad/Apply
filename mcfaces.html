@@ -11,7 +11,7 @@
   --green: #2d6b3a; --green-text: #5aba6a;
   --drawer-peek: 55px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: 'Segoe UI', sans-serif;
   background: var(--bg); color: var(--text);
@@ -453,6 +453,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     height: 78vh; height: 78svh; height: 78dvh;
     transform: translateY(calc(100% - var(--drawer-peek) - env(safe-area-inset-bottom, 0px)));
     transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    will-change: transform;
     border-radius: 20px 20px 0 0;
     border-top: 2px solid var(--accent);
     border-right: none;
