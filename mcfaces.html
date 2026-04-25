@@ -475,8 +475,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   /* face adjustments button — fixed position on mobile */
   .show-controls-wrap {
     position: fixed !important;
-    bottom: 170px !important;
+    bottom: 170px;
     z-index: 200;
+  }
+  /* panels are bottom:178px z-index:201 — button must be below AND above them */
+  .viewer-wrap.controls-open .show-controls-wrap {
+    bottom: 88px !important;
+    z-index: 205 !important;
   }
   /* hide when drawer is open */
   .layout:has(.sidebar.drawer-open) .show-controls-wrap { display: none !important; }
