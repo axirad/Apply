@@ -475,7 +475,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   /* face adjustments button — fixed position on mobile */
   .show-controls-wrap {
     position: fixed !important;
-    bottom: 213px !important;
+    bottom: 165px !important;
     z-index: 200;
   }
   /* hide when drawer is open */
@@ -822,7 +822,7 @@ window.addEventListener('load', () => {
     canvas: skinCanvas, width: viewerWrap.clientWidth, height: viewerWrap.clientHeight,
   });
   viewer.zoom       = window.innerWidth <= 768 ? 0.6 : 0.85;
-  if (window.innerWidth <= 768) viewer.controls.target.set(0, -10.5, 0);
+  if (window.innerWidth <= 768) viewer.controls.target.set(0, -6, 0);
   viewer.animation  = null;
   viewer.controls.enableZoom = true;
   viewer.controls.enableRotate = true;
