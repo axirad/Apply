@@ -593,7 +593,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <div class="step step-active" id="step1">
     <div class="sec-title" style="font-size:1.176rem;">1. Start Your Creation Here</div>
     <button class="btn btn-blue" id="pick-char-btn" style="font-size:1.1rem;margin-bottom:6px">Pick Your Character</button>
-    <div id="char-flyout" class="cat-flyout"></div>
     <button class="btn btn-gray" id="upload-skin-btn" style="width:100%;margin-top:6px">Upload Your Own Skin<br><span style="font-size:1.05em;font-weight:400;color:#fff">Optional</span></button>
     <div class="file-lbl" id="skin-lbl">No skin loaded</div>
     </div>
@@ -1539,11 +1538,10 @@ function setReselectMode(on) {
 // ── Re-Select panel buttons ───────────────────────────────────────────────────
 document.getElementById('reselect-char-btn').addEventListener('click', () => {
   document.getElementById('reselect-panel').style.display = 'none';
-  document.getElementById('step1').style.display = '';
   S.origSkin = null; S.compSkin = null; S.rawSkin = null; S.hasSkin = false;
   document.getElementById('skin-lbl').textContent = 'No skin loaded';
   markDirty(); updateButtons();
-  document.getElementById('pick-char-btn').click();
+  document.getElementById('char-flyout').classList.add('open');
 });
 
 document.getElementById('reselect-face-btn').addEventListener('click', () => {
@@ -2005,5 +2003,6 @@ function updateButtons(){
     <button class="buy-prompt-ok">Got It!</button>
   </div>
 </div>
+<div id="char-flyout" class="cat-flyout"></div>
 </body>
 </html>
