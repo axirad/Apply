@@ -333,12 +333,12 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   .mobile-only  { display: flex !important; }
   .viewer-buy {
     display: flex; flex-direction: row; align-items: center; gap: 10px;
-    position: fixed; bottom: 100px; left: 50%; right: auto; z-index: 149;
-    transform: translateX(-50%); transform-origin: bottom center;
+    position: fixed; bottom: 100px; left: 20px; right: auto; z-index: 149;
   }
-  .viewer-buy .buy-btn  { width: 100px !important; height: 50px !important; padding: 0 !important; font-size: 0.85rem !important; }
-  .viewer-buy .buy-price { display: none; }
-  .viewer-buy .more-info-btn { width: 100px !important; height: 40px !important; padding: 0 !important; font-size: 0.7rem !important; margin-bottom: 0; }
+  .viewer-buy-cta { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .viewer-buy .buy-btn  { width: 150px !important; height: 50px !important; padding: 0 !important; font-size: 0.9rem !important; }
+  .viewer-buy .buy-price { display: block; }
+  .viewer-buy .more-info-btn { width: 110px !important; height: 40px !important; padding: 0 6px !important; font-size: 0.65rem !important; margin-bottom: 0; }
   /* hide when drawer is open */
   .layout:has(.sidebar.drawer-open) .viewer-buy { display: none; }
   /* hide when controls are showing */
@@ -628,8 +628,10 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <!-- Floating Buy Now — mobile only, drawer closed, controls off -->
     <div class="viewer-buy">
       <button class="more-info-btn"><img src="/smiley-look.svg" class="btn-icon"> See What's Included</button>
-      <button class="buy-btn">Buy Now</button>
-      <div class="buy-price">$39.95</div>
+      <div class="viewer-buy-cta">
+        <button class="buy-btn">Buy Now</button>
+        <div class="buy-price">$39.95</div>
+      </div>
     </div>
     <div class="viewer-brand">ApplyMyFace.com</div>
     <div class="no-skin-hint show" id="no-skin-hint">
