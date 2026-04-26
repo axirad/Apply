@@ -453,7 +453,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     position: fixed !important;
     bottom: 0; left: 0;
     width: 100vw !important; max-width: 100vw !important;
-    height: 78vh; height: 78svh; height: 78dvh;
+    height: calc(78vh - 150px); height: calc(78svh - 150px); height: calc(78dvh - 150px);
     transform: translateY(calc(100% - var(--drawer-peek) - env(safe-area-inset-bottom, 0px)));
     transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
     will-change: transform;
@@ -1493,6 +1493,7 @@ function setReselectMode(on) {
   document.getElementById('step1').style.display = hide;
   document.getElementById('step2').style.display = hide;
   document.querySelector('.divider').style.display = hide;
+  document.querySelector('.buy-cta').style.display = hide;
 }
 
 // ── Mobile bottom drawer ──────────────────────────────────────────────────────
