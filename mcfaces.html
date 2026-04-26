@@ -576,6 +576,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       <div class="drawer-pill"></div>
       <div class="drawer-label" style="white-space:nowrap;text-align:center;width:100%">▲ Re-Select</div>
     </div>
+
+    <div id="reselect-panel" style="display:none;flex-direction:column;align-items:stretch;gap:12px;padding:18px 16px 8px;">
+      <div style="text-align:center;color:var(--accent);font-weight:700;font-size:1rem;letter-spacing:0.05em;">WHAT WOULD YOU LIKE TO CHANGE?</div>
+      <button class="btn btn-blue" id="reselect-char-btn" style="font-size:1.05rem;">Change Character</button>
+      <button class="btn btn-blue" id="reselect-face-btn" style="font-size:1.05rem;">Change Face Photo</button>
+    </div>
+
     <div class="app-title">
       <span class="desktop-disclaimer">NOT AN OFFICIAL<br>MINECRAFT PRODUCT.</span>
       <img src="/assets/Red_Lava_Toys_HotIce%20%5BConverted%5D.png" height="60" style="width:auto;image-rendering:auto;filter:brightness(1.4) drop-shadow(0 1px 6px rgba(255,80,0,0.6));margin-top:-10px">
@@ -1488,11 +1495,14 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
   function setOpen(open) {
     sidebar.classList.toggle('drawer-open', open);
     label.textContent = open ? '▼ Tap to Close' : '▲ Re-Select';
-    if (!open && S.hasSkin && !S.hasFace) {
-      const bubble = document.querySelector('.hint-bubble');
-      if (bubble) {
-        bubble.classList.add('shake');
-        setTimeout(() => bubble.classList.remove('shake'), 600);
+    if (!open) {
+      document.getElementById('reselect-panel').style.display = 'none';
+      if (S.hasSkin && !S.hasFace) {
+        const bubble = document.querySelector('.hint-bubble');
+        if (bubble) {
+          bubble.classList.add('shake');
+          setTimeout(() => bubble.classList.remove('shake'), 600);
+        }
       }
     }
   }
@@ -1500,8 +1510,11 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
   handle.addEventListener('click', () => {
     if (sidebar.classList.contains('drawer-open')) {
       setOpen(false);
+    } else if (S.hasSkin || S.hasFace) {
+      document.getElementById('reselect-panel').style.display = 'flex';
+      setOpen(true);
     } else {
-      location.reload();
+      setOpen(true);
     }
   });
 
@@ -1512,6 +1525,24 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
     if (dy < -40) setOpen(false);
   }, { passive: true });
 })();
+
+// ── Re-Select panel buttons ───────────────────────────────────────────────────
+document.getElementById('reselect-char-btn').addEventListener('click', () => {
+  document.getElementById('reselect-panel').style.display = 'none';
+  S.origSkin = null; S.compSkin = null; S.rawSkin = null; S.hasSkin = false;
+  document.getElementById('skin-lbl').textContent = 'No skin loaded';
+  markDirty(); updateButtons();
+  document.getElementById('pick-char-btn').click();
+});
+
+document.getElementById('reselect-face-btn').addEventListener('click', () => {
+  document.getElementById('reselect-panel').style.display = 'none';
+  S.faceOrig = null; S.faceCur = null; S.hasFace = false;
+  document.getElementById('face-lbl').textContent = 'No Photo Loaded';
+  document.getElementById('face-btn').textContent = 'Upload Face Photo';
+  markDirty(); updateButtons();
+  document.getElementById('face-btn').click();
+});
 
 // ── Sidebar drag resize ───────────────────────────────────────────────────────
 (function() {
