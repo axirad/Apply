@@ -989,6 +989,7 @@ async function loadSkinList() {
         document.getElementById('sidebar').classList.remove('drawer-open');
         const lbl = document.querySelector('.drawer-label');
         if (lbl) lbl.textContent = '▲ Re-Select';
+        setReselectMode(false);
         try {
           const blob = await fetch(`${API_BASE}/skins/${encodeURIComponent(path)}`).then(r => r.blob());
           onSkinFile(new File([blob], file, { type:'image/png' }));
@@ -1537,7 +1538,8 @@ function setReselectMode(on) {
 
 // ── Re-Select panel buttons ───────────────────────────────────────────────────
 document.getElementById('reselect-char-btn').addEventListener('click', () => {
-  setReselectMode(false);
+  document.getElementById('reselect-panel').style.display = 'none';
+  document.getElementById('step1').style.display = '';
   S.origSkin = null; S.compSkin = null; S.rawSkin = null; S.hasSkin = false;
   document.getElementById('skin-lbl').textContent = 'No skin loaded';
   markDirty(); updateButtons();
