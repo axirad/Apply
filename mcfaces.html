@@ -368,6 +368,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 }
 .more-info-btn .btn-icon { width: 1.7rem; height: 1.7rem; vertical-align: middle; image-rendering: pixelated; }
 .more-info-btn:hover { border-color: #ff8000; color: #ff8000; }
+.faq-btn {
+  background: none; border: 1px solid #888; color: #ccc;
+  border-radius: 30px; padding: 10px 22px; font-size: 1.13rem; font-weight: 600;
+  cursor: pointer; transition: border-color 0.15s, color 0.15s;
+}
+.faq-btn:hover { border-color: #ff8000; color: #ff8000; }
+.viewer-buy .faq-btn { width: 110px !important; height: 40px !important; padding: 0 6px !important; font-size: 0.65rem !important; }
 
 /* More Info flyout overlay */
 @keyframes flyout-up { from{transform:translateY(100%)} to{transform:translateY(0)} }
@@ -616,6 +623,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       <button class="buy-btn" id="buy-btn">Buy Now</button>
       <div class="buy-price">$39.95</div>
       <button class="more-info-btn" id="more-info-btn"><img src="/smiley-look.svg" class="btn-icon"> See What's Included</button>
+      <button class="faq-btn" id="faq-btn-drawer">FAQ</button>
     </div>
   </div>
 
@@ -632,6 +640,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <button class="buy-btn">Buy Now</button>
         <div class="buy-price">$39.95</div>
       </div>
+      <button class="faq-btn viewer-faq-btn">FAQ</button>
     </div>
     <div class="viewer-brand">ApplyMyFace.com</div>
     <div class="no-skin-hint show" id="no-skin-hint">
@@ -1437,6 +1446,10 @@ document.querySelectorAll('.more-info-btn').forEach(b => b.addEventListener('cli
   overlay.classList.add('show');
 }));
 
+document.querySelectorAll('.faq-btn').forEach(b => b.addEventListener('click', () => {
+  document.getElementById('faq-overlay').classList.add('show');
+}));
+
 makeHoldable(document.getElementById('nudge-left-btn'),  () => { S.faceX -= 2; markDirty(); });
 makeHoldable(document.getElementById('nudge-right-btn'), () => { S.faceX += 2; markDirty(); });
 makeHoldable(document.getElementById('nudge-up-btn'),    () => { S.faceY -= 3.2; markDirty(); });
@@ -1996,6 +2009,26 @@ function updateButtons(){
       <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px">
         <button class="mip-close" id="mip-close" style="margin:0">Got It — Let's Make One!</button>
         <button id="mip-back-btn" onclick="document.getElementById('more-info-overlay').classList.remove('show')" style="padding:5px 16px;font-size:0.72rem;font-weight:700;border:1px solid #888;border-radius:16px;background:#333;color:#ccc;cursor:pointer;white-space:nowrap;margin-left:30px">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ flyout -->
+<div class="more-info-overlay" id="faq-overlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="more-info-panel">
+    <div class="mip-body">
+      <div class="mip-title">Frequently Asked Questions</div>
+      <ul class="mip-bullets">
+        <li><strong>What exactly do I get?</strong><br>A custom Minecraft figure with your photo face printed on it, plus a set of face tiles for front, back, left, and right views.</li>
+        <li><strong>How does it work?</strong><br>Pick a Minecraft character skin, upload a photo of your face, and we do the rest. You'll receive a finished figure shipped to your door.</li>
+        <li><strong>How long does shipping take?</strong><br>Typically 7–14 business days. We'll send a tracking number once your order ships.</li>
+        <li><strong>What photo works best?</strong><br>A clear front-facing photo with good lighting. No sunglasses or hats if possible.</li>
+        <li><strong>Can I order one as a gift?</strong><br>Absolutely — it ships in a gift-ready box.</li>
+        <li><strong>What if I'm not happy with it?</strong><br>Contact us and we'll make it right.</li>
+      </ul>
+      <div style="display:flex;align-items:center;justify-content:center;margin-top:20px">
+        <button onclick="document.getElementById('faq-overlay').classList.remove('show')" style="padding:10px 36px;font-size:1rem;font-weight:700;border:1px solid #888;border-radius:22px;background:#333;color:#ccc;cursor:pointer">Close</button>
       </div>
     </div>
   </div>
