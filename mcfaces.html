@@ -350,6 +350,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   filter: drop-shadow(0 1px 4px rgba(255,120,0,0.7));
 }
+.buy-price-was {
+  font-size: 0.75rem; font-weight: 600; color: #888;
+  text-decoration: line-through; text-decoration-style: solid;
+  letter-spacing: 0.02em; line-height: 1;
+}
 .buy-btn {
   background: linear-gradient(135deg, #d45000 0%, #ff8000 100%);
   color: #fff; font-weight: 800; font-size: 1.1rem; letter-spacing: 0.04em;
@@ -614,7 +619,8 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <!-- Buy Now CTA — pinned at bottom of drawer -->
     <div class="buy-cta">
       <button class="buy-btn" id="buy-btn">Buy Now</button>
-      <div class="buy-price">$39.95</div>
+      <div class="buy-price-was">$39.95</div>
+      <div class="buy-price">$29.95</div>
       <button class="more-info-btn" id="more-info-btn"><img src="/smiley-look.svg" class="btn-icon"> See What's Included</button>
     </div>
   </div>
@@ -630,7 +636,8 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
       <button class="more-info-btn"><img src="/smiley-look.svg" class="btn-icon"> See What's Included</button>
       <div class="viewer-buy-cta">
         <button class="buy-btn">Buy Now</button>
-        <div class="buy-price">$39.95</div>
+        <div class="buy-price-was">$39.95</div>
+        <div class="buy-price">$29.95</div>
       </div>
     </div>
     <div class="viewer-brand">ApplyMyFace.com</div>
