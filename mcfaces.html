@@ -1485,6 +1485,14 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
   }
 });
 
+function setReselectMode(on) {
+  document.getElementById('reselect-panel').style.display = on ? 'flex' : 'none';
+  const hide = on ? 'none' : '';
+  document.getElementById('step1').style.display = hide;
+  document.getElementById('step2').style.display = hide;
+  document.querySelector('.divider').style.display = hide;
+}
+
 // ── Mobile bottom drawer ──────────────────────────────────────────────────────
 (function() {
   const sidebar = document.getElementById('sidebar');
@@ -1496,7 +1504,7 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
     sidebar.classList.toggle('drawer-open', open);
     label.textContent = open ? '▼ Tap to Close' : '▲ Re-Select';
     if (!open) {
-      document.getElementById('reselect-panel').style.display = 'none';
+      setReselectMode(false);
       if (S.hasSkin && !S.hasFace) {
         const bubble = document.querySelector('.hint-bubble');
         if (bubble) {
@@ -1509,10 +1517,11 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
 
   handle.addEventListener('click', () => {
     if (sidebar.classList.contains('drawer-open')) {
+      setReselectMode(false);
       setOpen(false);
     } else if (S.hasSkin || S.hasFace) {
-      document.getElementById('reselect-panel').style.display = 'flex';
       setOpen(true);
+      setReselectMode(true);
     } else {
       setOpen(true);
     }
@@ -1528,7 +1537,7 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
 
 // ── Re-Select panel buttons ───────────────────────────────────────────────────
 document.getElementById('reselect-char-btn').addEventListener('click', () => {
-  document.getElementById('reselect-panel').style.display = 'none';
+  setReselectMode(false);
   S.origSkin = null; S.compSkin = null; S.rawSkin = null; S.hasSkin = false;
   document.getElementById('skin-lbl').textContent = 'No skin loaded';
   markDirty(); updateButtons();
@@ -1536,7 +1545,7 @@ document.getElementById('reselect-char-btn').addEventListener('click', () => {
 });
 
 document.getElementById('reselect-face-btn').addEventListener('click', () => {
-  document.getElementById('reselect-panel').style.display = 'none';
+  setReselectMode(false);
   S.faceOrig = null; S.faceCur = null; S.hasFace = false;
   document.getElementById('face-lbl').textContent = 'No Photo Loaded';
   document.getElementById('face-btn').textContent = 'Upload Face Photo';
