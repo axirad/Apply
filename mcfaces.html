@@ -334,9 +334,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   .viewer-buy {
     display: flex; flex-direction: row; align-items: center; gap: 10px;
     position: fixed; bottom: 100px; left: 50%; right: auto; z-index: 149;
-    transform: translateX(-50%) scale(0.75); transform-origin: bottom center;
+    transform: translateX(-50%); transform-origin: bottom center;
   }
-  .viewer-buy .more-info-btn { margin-bottom: 0; }
+  .viewer-buy .buy-btn  { width: 100px !important; height: 50px !important; padding: 0 !important; font-size: 0.85rem !important; }
+  .viewer-buy .buy-price { display: none; }
+  .viewer-buy .more-info-btn { width: 100px !important; height: 40px !important; padding: 0 !important; font-size: 0.7rem !important; margin-bottom: 0; }
   /* hide when drawer is open */
   .layout:has(.sidebar.drawer-open) .viewer-buy { display: none; }
   /* hide when controls are showing */
