@@ -435,10 +435,18 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
 /* ── Mobile bottom drawer ─────────────────────────────────────────────── */
 .drawer-handle {
-  display: none;
+  display: none; position: relative;
   justify-content: center; align-items: center; flex-direction: column;
   padding: 4px 0 3px; cursor: pointer; gap: 3px;
 }
+.drawer-disclaimer {
+  position: absolute; top: 10px;
+  font-size: 0.52rem; color: #c0c0c0; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.35;
+  pointer-events: none;
+}
+.drawer-disclaimer-left  { left: 8px;  text-align: left; max-width: 90px; }
+.drawer-disclaimer-right { right: 8px; text-align: right; max-width: 110px; }
 .drawer-pill {
   width: 44px; height: 5px; background: #666; border-radius: 3px;
 }
@@ -580,8 +588,10 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   <!-- ── Left sidebar ─────────────────────────────────────── -->
   <div class="sidebar" id="sidebar">
     <div class="drawer-handle" id="drawer-handle">
+      <div class="drawer-disclaimer drawer-disclaimer-left">NOT AN OFFICIAL<br>MINECRAFT PRODUCT.</div>
       <div class="drawer-pill"></div>
       <div class="drawer-label" style="white-space:nowrap;text-align:center;width:100%">▲ Re-Select</div>
+      <div class="drawer-disclaimer drawer-disclaimer-right">NOT APPROVED BY OR<br>ASSOCIATED WITH<br>MOJANG OR MICROSOFT.</div>
     </div>
 
     <div id="reselect-panel" style="display:none;flex-direction:column;align-items:stretch;gap:12px;padding:18px 16px 8px;">
