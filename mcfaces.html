@@ -1428,7 +1428,19 @@ document.querySelectorAll('.more-info-btn').forEach(b => b.addEventListener('cli
   const overlay  = document.getElementById('more-info-overlay');
   const closeBtn = document.getElementById('mip-close');
   const buyReady = S.hasSkin && S.hasFace;
-  const backBtn = document.getElementById('mip-back-btn');
+  const backBtn  = document.getElementById('mip-back-btn');
+  const hero     = overlay.querySelector('.mip-hero');
+  const body     = overlay.querySelector('.mip-body');
+
+  if (S.hasSkin) {
+    hero.src = document.getElementById('skin-canvas').toDataURL('image/png');
+    hero.style.display = '';
+    body.style.paddingTop = '';
+  } else {
+    hero.style.display = 'none';
+    body.style.paddingTop = '30px';
+  }
+
   if (buyReady) {
     closeBtn.textContent = '🎁 Buy Now!';
     closeBtn.style.background = '#e85d00';
