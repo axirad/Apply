@@ -333,10 +333,10 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   .mobile-only  { display: flex !important; }
   .viewer-buy {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
-    position: fixed; bottom: 100px; left: calc(50% + 110px); right: auto; z-index: 149;
-    transform: scale(0.6); transform-origin: bottom right;
+    position: fixed; bottom: 88px; left: 50%; right: auto; z-index: 149;
+    transform: translateX(-50%) scale(1.8); transform-origin: bottom center;
   }
-  .viewer-buy .more-info-btn { margin-bottom: 17px; }
+  .viewer-buy .more-info-btn { margin-bottom: 0; }
   /* hide when drawer is open */
   .layout:has(.sidebar.drawer-open) .viewer-buy { display: none; }
   /* hide when controls are showing */
@@ -552,10 +552,6 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   #adj-reset-btn { font-size: 2rem !important; width: 52px !important; height: 44px !important; display:flex !important; align-items:center !important; justify-content:center !important; padding:0 !important; }
   .btn-anim { padding: 5px 6px !important; font-size: 0.84rem !important; flex: 1 !important; white-space: normal !important; line-height: 1.2 !important; text-align: center !important; }
 
-  /* viewer-buy floating button reverts to original size */
-  .viewer-buy .buy-btn  { font-size: 0.74rem !important; padding: 6.3px 14.7px !important; border-radius: 22px !important; }
-  .viewer-buy .buy-price { font-size: 0.8rem !important; }
-  .viewer-buy .more-info-btn { font-size: 0.76rem !important; padding: 4.2px 14.7px !important; border-radius: 20px !important; }
 
   /* brand text bigger on mobile */
   .viewer-brand { font-size: 2rem; top: 5px; }
