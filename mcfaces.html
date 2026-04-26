@@ -1541,7 +1541,14 @@ document.getElementById('reselect-char-btn').addEventListener('click', () => {
   S.origSkin = null; S.compSkin = null; S.rawSkin = null; S.hasSkin = false;
   document.getElementById('skin-lbl').textContent = 'No skin loaded';
   markDirty(); updateButtons();
-  document.getElementById('char-flyout').classList.add('open');
+  setTimeout(() => {
+    const flyout = document.getElementById('char-flyout');
+    flyout.classList.add('open');
+    document.addEventListener('click', function restoreOnClose() {
+      setReselectMode(false);
+      document.removeEventListener('click', restoreOnClose);
+    }, { once: true });
+  }, 0);
 });
 
 document.getElementById('reselect-face-btn').addEventListener('click', () => {
