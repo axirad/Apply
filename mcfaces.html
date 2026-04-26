@@ -364,7 +364,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   cursor: pointer; letter-spacing: 0.03em; transition: border-color 0.15s, color 0.15s;
   display: inline-flex; align-items: center; gap: 6px;
 }
-.more-info-btn .btn-icon { font-size: 1.7rem; line-height: 1; }
+.more-info-btn .btn-icon { width: 1.7rem; height: 1.7rem; vertical-align: middle; image-rendering: pixelated; }
 .more-info-btn:hover { border-color: #ff8000; color: #ff8000; }
 
 /* More Info flyout overlay */
@@ -617,7 +617,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <div class="buy-cta">
       <button class="buy-btn" id="buy-btn">Buy Now</button>
       <div class="buy-price">$39.95</div>
-      <button class="more-info-btn" id="more-info-btn"><span class="btn-icon">🕵️</span> See What's Included</button>
+      <button class="more-info-btn" id="more-info-btn"><img src="/smiley-look.svg" class="btn-icon"> See What's Included</button>
     </div>
   </div>
 
@@ -629,7 +629,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <div id="crosshair-overlay"></div>
     <!-- Floating Buy Now — mobile only, drawer closed, controls off -->
     <div class="viewer-buy">
-      <button class="more-info-btn"><span class="btn-icon">🕵️</span> See What's Included</button>
+      <button class="more-info-btn"><img src="/smiley-look.svg" class="btn-icon"> See What's Included</button>
       <button class="buy-btn">Buy Now</button>
       <div class="buy-price">$39.95</div>
     </div>
