@@ -10,7 +10,7 @@
   --bg: #1a1a1a; --surface: #222; --accent: #f0a500;
   --text: #e8e8e8; --muted: #999; --border: #3a3a3a;
   --green: #2d6b3a; --green-text: #5aba6a;
-  --drawer-peek: 65px;
+  --drawer-peek: 75px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -1914,7 +1914,7 @@ function updateButtons(){
   function updateDrawerPeek() {
     if (!window.visualViewport) return;
     const toolbarH = window.innerHeight - window.visualViewport.height;
-    const peek = Math.max(65, toolbarH + 65);
+    const peek = Math.max(75, toolbarH + 75);
     document.documentElement.style.setProperty('--drawer-peek', peek + 'px');
   }
   if (window.visualViewport) {
