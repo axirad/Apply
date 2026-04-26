@@ -846,6 +846,7 @@ let viewer = null;
 window.addEventListener('load', () => {
   viewer = new skinview3d.SkinViewer({
     canvas: skinCanvas, width: viewerWrap.clientWidth, height: viewerWrap.clientHeight,
+    preserveDrawingBuffer: true,
   });
   viewer.zoom       = window.innerWidth <= 768 ? 0.6 : 0.85;
   if (window.innerWidth <= 768) viewer.controls.target.set(0, -6, 0);
