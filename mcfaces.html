@@ -574,7 +574,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   <div class="sidebar" id="sidebar">
     <div class="drawer-handle" id="drawer-handle">
       <div class="drawer-pill"></div>
-      <div class="drawer-label" style="white-space:nowrap;text-align:center;width:100%">▲ Tap to Open</div>
+      <div class="drawer-label" style="white-space:nowrap;text-align:center;width:100%">▲ Re-Select</div>
     </div>
     <div class="app-title">
       <span class="desktop-disclaimer">NOT AN OFFICIAL<br>MINECRAFT PRODUCT.</span>
@@ -981,7 +981,7 @@ async function loadSkinList() {
         // Close drawer on mobile so hint arrow is visible
         document.getElementById('sidebar').classList.remove('drawer-open');
         const lbl = document.querySelector('.drawer-label');
-        if (lbl) lbl.textContent = '▲ Start Over';
+        if (lbl) lbl.textContent = '▲ Re-Select';
         try {
           const blob = await fetch(`${API_BASE}/skins/${encodeURIComponent(path)}`).then(r => r.blob());
           onSkinFile(new File([blob], file, { type:'image/png' }));
@@ -1487,7 +1487,7 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
 
   function setOpen(open) {
     sidebar.classList.toggle('drawer-open', open);
-    label.textContent = open ? '▼ Tap to Close' : '▲ Start Over';
+    label.textContent = open ? '▼ Tap to Close' : '▲ Re-Select';
     if (!open && S.hasSkin && !S.hasFace) {
       const bubble = document.querySelector('.hint-bubble');
       if (bubble) {
@@ -1565,7 +1565,7 @@ document.getElementById('show-controls-btn').addEventListener('click', () => set
 document.getElementById('upload-skin-btn').addEventListener('click', () => {
   document.getElementById('sidebar').classList.remove('drawer-open');
   const lbl = document.querySelector('.drawer-label');
-  if (lbl) lbl.textContent = '▲ Start Over';
+  if (lbl) lbl.textContent = '▲ Re-Select';
   document.getElementById('skin-file').click();
 });
 let _facePickerOpen = false;
@@ -1574,7 +1574,7 @@ document.getElementById('face-btn').addEventListener('click', () => {
   // Close drawer on mobile so the loading characters are visible
   document.getElementById('sidebar').classList.remove('drawer-open');
   const lbl = document.querySelector('.drawer-label');
-  if (lbl) lbl.textContent = '▲ Start Over';
+  if (lbl) lbl.textContent = '▲ Re-Select';
   // Show emoji crew immediately — don't wait for file picker to return
   S.faceProcessing = true; updateButtons();
   showLoading('Finding your photo…');
