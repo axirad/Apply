@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import requests, os, configparser, smtplib, base64, io
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 from PIL import Image, ImageOps
 
 def check_image_safe(image_bytes):
@@ -151,6 +153,63 @@ def remove_bg():
     data = resp.json()
     print(f'  ← cutout.pro response: code={data.get("code")} msg={data.get("msg")} hasBase64={bool(data.get("data",{}).get("imageBase64"))} hasUrl={bool(data.get("data",{}).get("imageUrl"))}')
     return jsonify(data)
+
+def _decode_data_url(data_url):
+    if ',' in data_url:
+        data_url = data_url.split(',', 1)[1]
+    return base64.b64decode(data_url)
+
+@app.route('/api/send-print-files', methods=['POST'])
+def send_print_files():
+    gmail_user = os.environ.get('GMAIL_USER', '').strip()
+    gmail_pass = os.environ.get('GMAIL_APP_PASSWORD', '').strip()
+    if not gmail_user or not gmail_pass:
+        print('  ⚠  send-print-files: GMAIL_USER / GMAIL_APP_PASSWORD not set')
+        return jsonify({'status': 'email not configured'}), 500
+    data = request.get_json(silent=True) or {}
+    order_id  = data.get('orderId',  'unknown')
+    skin_name = data.get('skinName', 'unknown')
+    timestamp = data.get('timestamp', '')
+    ua        = data.get('userAgent', '')
+    skin_b64  = data.get('skin')
+    heads     = data.get('heads') or {}
+    if not skin_b64 or not heads:
+        return jsonify({'status': 'missing files'}), 400
+    try:
+        msg = MIMEMultipart()
+        msg['Subject'] = f'🎉 ApplyMyFace Order Pending — {order_id} — {skin_name}'
+        msg['From']    = gmail_user
+        msg['To']      = 'sales@redlavatoys.com'
+        body = (
+            f'A buyer just clicked Buy Now on applymyface.com.\n\n'
+            f'Order ID: {order_id}\n'
+            f'Skin:     {skin_name}\n'
+            f'Time:     {timestamp}\n'
+            f'Browser:  {ua}\n\n'
+            f'Note: this fires when Buy is clicked, before checkout. '
+            f'Match against actual Shopify orders by approximate timestamp.\n\n'
+            f'Attached: skin.png (64×64) + 5 head views (300×300, front/back/left/right/top).'
+        )
+        msg.attach(MIMEText(body, 'plain'))
+        skin_attach = MIMEImage(_decode_data_url(skin_b64), _subtype='png')
+        skin_attach.add_header('Content-Disposition', 'attachment', filename=f'{order_id}_skin.png')
+        msg.attach(skin_attach)
+        for view in ('front', 'back', 'left', 'right', 'top'):
+            b64 = heads.get(view)
+            if not b64:
+                continue
+            img = MIMEImage(_decode_data_url(b64), _subtype='png')
+            img.add_header('Content-Disposition', 'attachment', filename=f'{order_id}_head_{view}.png')
+            msg.attach(img)
+        with smtplib.SMTP('smtp.gmail.com', 587) as s:
+            s.starttls()
+            s.login(gmail_user, gmail_pass)
+            s.send_message(msg)
+        print(f'  OK  Print files emailed to sales@redlavatoys.com — {order_id} — {skin_name}')
+        return jsonify({'status': 'sent', 'orderId': order_id})
+    except Exception as e:
+        print(f'  ✗  send-print-files failed: {e}')
+        return jsonify({'status': 'failed', 'error': str(e)}), 500
 
 if __name__ == '__main__':
     key = get_api_key()

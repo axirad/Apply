@@ -1407,6 +1407,42 @@ document.getElementById('auto-color-btn').addEventListener('click', () => {
 });
 makeHoldable(document.getElementById('rot-left-btn'),  () => { S.faceRot = (S.faceRot - 1 + 360) % 360; markDirty(); });
 makeHoldable(document.getElementById('rot-right-btn'), () => { S.faceRot = (S.faceRot + 1) % 360; markDirty(); });
+function generatePrintFiles() {
+  const _S = SKIN_SCALE;
+  const headSrc = 8 * _S;
+  const headFaces = [
+    { name: 'front', sx: 8*_S,  sy: 8*_S },
+    { name: 'back',  sx: 24*_S, sy: 8*_S },
+    { name: 'left',  sx: 16*_S, sy: 8*_S },
+    { name: 'right', sx: 0,     sy: 8*_S },
+    { name: 'top',   sx: 8*_S,  sy: 0    },
+  ];
+  const skin64 = document.createElement('canvas');
+  skin64.width = 64; skin64.height = 64;
+  const sctx = skin64.getContext('2d');
+  sctx.imageSmoothingEnabled = false;
+  sctx.drawImage(S.compSkin, 0, 0, 64, 64);
+  const heads = {};
+  for (const f of headFaces) {
+    const c = document.createElement('canvas');
+    c.width = 300; c.height = 300;
+    const x = c.getContext('2d');
+    x.imageSmoothingEnabled = true;
+    x.imageSmoothingQuality = 'high';
+    x.drawImage(S.compSkin, f.sx, f.sy, headSrc, headSrc, 0, 0, 300, 300);
+    heads[f.name] = c.toDataURL('image/png');
+  }
+  return { skin: skin64.toDataURL('image/png'), heads };
+}
+
+function makeOrderId() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const stamp = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `AMF-${stamp}-${rand}`;
+}
+
 document.querySelectorAll('.buy-btn').forEach(b => b.addEventListener('click', () => {
   const prompt = document.getElementById('buy-prompt');
   const charEl = document.getElementById('buy-prompt-char');
@@ -1422,7 +1458,25 @@ document.querySelectorAll('.buy-btn').forEach(b => b.addEventListener('click', (
     charEl.classList.remove('char'); void charEl.offsetWidth; charEl.classList.add('char');
     prompt.querySelector('.buy-prompt-card').style.borderColor = 'var(--accent)';
   } else {
-    // Ready — random walker celebrates then auto-closes
+    // Ready — fire print files email, then random walker celebrates and redirects
+    try {
+      const orderId  = makeOrderId();
+      const skinName = (document.getElementById('skin-lbl').textContent || '').trim();
+      const files    = generatePrintFiles();
+      fetch(`${API_BASE}/api/send-print-files`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId,
+          skinName,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          skin:  files.skin,
+          heads: files.heads,
+        }),
+      }).catch(e => console.error('print files send failed:', e));
+    } catch(e) { console.error('generatePrintFiles failed:', e); }
+
     const ri = Math.floor(Math.random() * WALKERS.length);
     msgEl.innerHTML = 'Why, <strong>thank you!</strong><br>🎉 Shipping is <strong>free!</strong> 🎉';
     charEl.innerHTML = WALKERS[ri];
