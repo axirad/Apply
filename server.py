@@ -192,14 +192,16 @@ def send_print_files():
         )
         msg.attach(MIMEText(body, 'plain'))
         skin_attach = MIMEImage(_decode_data_url(skin_b64), _subtype='png')
-        skin_attach.add_header('Content-Disposition', 'attachment', filename=f'{order_id}_skin.png')
+        skin_attach.add_header('Content-Disposition', 'attachment', filename=f'{order_id}_Skin.png')
         msg.attach(skin_attach)
+        # RT/LT from the character's perspective (texture UV "right" = character's right side)
+        suffix_map = {'front': 'Frt', 'back': 'Back', 'left': 'SideLT', 'right': 'SideRT', 'top': 'Top'}
         for view in ('front', 'back', 'left', 'right', 'top'):
             b64 = heads.get(view)
             if not b64:
                 continue
             img = MIMEImage(_decode_data_url(b64), _subtype='png')
-            img.add_header('Content-Disposition', 'attachment', filename=f'{order_id}_head_{view}.png')
+            img.add_header('Content-Disposition', 'attachment', filename=f'{order_id}_{suffix_map[view]}.png')
             msg.attach(img)
         with smtplib.SMTP('smtp.gmail.com', 587) as s:
             s.starttls()
