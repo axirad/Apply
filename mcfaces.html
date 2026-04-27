@@ -388,21 +388,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   width: 100%; max-width: 540px; max-height: 88vh;
   overflow-y: auto; animation: flyout-up 0.38s cubic-bezier(0.32,0.72,0,1);
 }
-.mip-hero-wrap { position: relative; display: block; line-height: 0; }
 .mip-hero { width: 100%; height: auto; display: block; margin-top: -30px; }
-.mip-size-badge {
-  position: absolute; bottom: 16px; left: 14px;
-  background: rgba(0,0,0,0.62); border: 1.5px solid rgba(255,140,0,0.45);
-  border-radius: 20px; padding: 5px 11px;
-  font-size: 0.72rem; font-weight: 900; letter-spacing: 0.04em;
-  background-clip: padding-box;
-  pointer-events: none; z-index: 5;
-}
-.mip-size-badge span {
-  background: linear-gradient(90deg, #ff5500 0%, #ff9500 60%, #ffcc00 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.9));
-}
 .mip-body { padding: 20px 22px 32px; margin-top: -200px; position: relative; }
 .mip-title {
   font-size: 1.3rem; font-weight: 900; letter-spacing: 0.04em; margin-bottom: 14px;
@@ -2033,10 +2019,7 @@ function updateButtons(){
 <!-- More Info flyout -->
 <div class="more-info-overlay" id="more-info-overlay" onclick="if(event.target===this)this.classList.remove('show')">
   <div class="more-info-panel">
-    <div class="mip-hero-wrap">
-      <img class="mip-hero" src="/assets/Hero.jpg?v=2" alt="ApplyMyFace figure">
-      <div class="mip-size-badge"><span>↕ 4" Tall</span></div>
-    </div>
+    <img class="mip-hero" src="/assets/Hero.jpg?v=2" alt="ApplyMyFace figure">
     <div class="mip-body">
       <div class="mip-title">Your Face. Your Character. Forever.</div>
       <ul class="mip-bullets">
