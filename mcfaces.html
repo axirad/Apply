@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ApplyMyFace.com — Put Your Face on a Skin</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script>
+if (new URLSearchParams(location.search).has('debug')) {
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/eruda';
+  s.onload = function () { eruda.init(); };
+  document.head.appendChild(s);
+}
+</script>
 <style>
 :root {
   --bg: #1a1a1a; --surface: #222; --accent: #f0a500;
