@@ -1240,6 +1240,9 @@ async function onFaceFile(file) {
       return;
     }
     console.error('cutout.pro failed:', e.message);
+    S.faceProcessing = false; hideLoading(); updateButtons();
+    showToast('⚠️ Background removal didn\'t complete — please try again, or try a smaller photo.');
+    return;
   }
   // Scale so the actual face (non-transparent bounds) fills the head top-to-chin
   const bounds = getFaceBounds(S.faceCur);
