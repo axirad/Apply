@@ -1012,7 +1012,7 @@ async function loadSkinList() {
       item.className = 'thumb-item';
 
       const img = document.createElement('img');
-      img.src = `${API_BASE}/thumbs/${path}`;
+      img.src = `${API_BASE}/thumbs/${encodeURIComponent(path)}?v=20260430`;
       img.alt = name;
       img.loading = 'lazy';
 
