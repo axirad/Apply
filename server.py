@@ -188,7 +188,7 @@ def send_print_files():
             f'Browser:  {ua}\n\n'
             f'Note: this fires when Buy is clicked, before checkout. '
             f'Match against actual Shopify orders by approximate timestamp.\n\n'
-            f'Attached: skin.png (64×64) + 5 head views (300×300, front/back/left/right/top).'
+            f'Attached: skin.png (64×64) + 5 head views (1000×1000, front/back/left/right/top).'
         )
         msg.attach(MIMEText(body, 'plain'))
         skin_attach = MIMEImage(_decode_data_url(skin_b64), _subtype='png')

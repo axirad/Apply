@@ -1436,11 +1436,11 @@ function generatePrintFiles() {
   const heads = {};
   for (const f of headFaces) {
     const c = document.createElement('canvas');
-    c.width = 300; c.height = 300;
+    c.width = 1000; c.height = 1000;
     const x = c.getContext('2d');
     x.imageSmoothingEnabled = true;
     x.imageSmoothingQuality = 'high';
-    x.drawImage(S.compSkin, f.sx, f.sy, headSrc, headSrc, 0, 0, 300, 300);
+    x.drawImage(S.compSkin, f.sx, f.sy, headSrc, headSrc, 0, 0, 1000, 1000);
     heads[f.name] = c.toDataURL('image/png');
   }
   return { skin: skin64.toDataURL('image/png'), heads };
