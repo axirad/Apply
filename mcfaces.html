@@ -833,6 +833,7 @@ const S = {
   hasSkin: false, hasFace: false, faceProcessing: false, animating: false,
   _dirty: false, _rafPending: false,
 };
+window.S = S;
 
 function getFaceScale() { return S.faceBaseScale * S.faceScalePct / 100; }
 
