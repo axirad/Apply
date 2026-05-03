@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ApplyMyFace.com — Put Your Face on a Skin</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <script>
@@ -895,6 +895,11 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', () => {
   if (viewer) viewer.setSize(viewerWrap.clientWidth, viewerWrap.clientHeight);
 });
+
+// ── iOS Safari: kill page-level pinch-zoom so canvas owns the gesture ──
+['gesturestart','gesturechange','gestureend'].forEach(ev =>
+  document.addEventListener(ev, e => e.preventDefault(), { passive: false })
+);
 
 // ── Touch gestures on viewer: pinch = face resize, 1-finger drag = face move ──
 (function() {
