@@ -837,11 +837,19 @@ window.S = S;
 
 function getFaceScale() { return S.faceBaseScale * S.faceScalePct / 100; }
 
-// Safari < 18 doesn't support ctx.filter — detect once and use pixel fallback
+// Safari < 18 doesn't support ctx.filter — detect by actually drawing through it.
+// (On iOS, the property test passes but drawImage silently ignores the filter.)
 const SUPPORTS_CTX_FILTER = (() => {
-  const t = document.createElement('canvas').getContext('2d');
-  t.filter = 'brightness(2)';
-  return t.filter === 'brightness(2)';
+  try {
+    const src = document.createElement('canvas'); src.width = 1; src.height = 1;
+    const sCtx = src.getContext('2d');
+    sCtx.fillStyle = 'rgb(100,100,100)'; sCtx.fillRect(0, 0, 1, 1);
+    const dst = document.createElement('canvas'); dst.width = 1; dst.height = 1;
+    const dCtx = dst.getContext('2d');
+    dCtx.filter = 'brightness(2)';
+    dCtx.drawImage(src, 0, 0);
+    return dCtx.getImageData(0, 0, 1, 1).data[0] > 150;
+  } catch (e) { return false; }
 })();
 
 function _applyPixelFilters(data, bright, sat, hueDeg) {
