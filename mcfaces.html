@@ -798,11 +798,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
         <button class="fp-btn adj-btn" id="adj-reset-btn" disabled style="font-size:1.8rem;line-height:1;padding:0 6px">↺</button>
       </div>
       <div class="fp-row" style="margin-top:-2px;justify-content:center">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">ORIGINAL</span>
-          <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;white-space:nowrap;width:120px !important;height:29px !important;padding:0 !important">👁️ COMPARE</button>
-          <span style="font-size:0.72rem;color:#ddd;font-weight:700;letter-spacing:0.06em">CURRENT</span>
-        </div>
+        <button class="fp-btn adj-btn" id="color-compare-btn" disabled style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;white-space:nowrap;width:150px !important;height:29px !important;padding:0 !important">👁️ VIEW ORIGINAL</button>
       </div>
     </div>
 
@@ -1569,27 +1565,23 @@ document.getElementById('pos-reset-btn').addEventListener('click', () => {
 
 // Orig button removed
 
-// Compare: hold to see original color, release to return to current
+// View Original / View Edited toggle
 let _compareSnapshot = null;
 const _compareBtn = document.getElementById('color-compare-btn');
-function _releaseCompare() {
-  if (!_compareSnapshot) return;
-  Object.assign(S, _compareSnapshot); _compareSnapshot = null;
-  _compareBtn.textContent = '👁️ COMPARE';
-  _compareBtn.classList.remove('on');
-  markDirty();
-}
-_compareBtn.addEventListener('pointerdown', e => {
+_compareBtn.addEventListener('click', () => {
   if (_compareBtn.disabled) return;
-  _compareBtn.setPointerCapture(e.pointerId);
-  _compareSnapshot = { faceBright:S.faceBright, faceSat:S.faceSat, faceWarmth:S.faceWarmth };
-  S.faceBright=S.defaultBright; S.faceSat=S.defaultSat; S.faceWarmth=S.defaultWarmth;
-  _compareBtn.textContent = '👁️ ORIGINAL';
-  _compareBtn.classList.add('on');
+  if (_compareSnapshot === null) {
+    _compareSnapshot = { faceBright:S.faceBright, faceSat:S.faceSat, faceWarmth:S.faceWarmth };
+    S.faceBright=S.defaultBright; S.faceSat=S.defaultSat; S.faceWarmth=S.defaultWarmth;
+    _compareBtn.textContent = '👁️ VIEW EDITED';
+    _compareBtn.classList.add('on');
+  } else {
+    Object.assign(S, _compareSnapshot); _compareSnapshot = null;
+    _compareBtn.textContent = '👁️ VIEW ORIGINAL';
+    _compareBtn.classList.remove('on');
+  }
   markDirty();
 });
-_compareBtn.addEventListener('pointerup',     _releaseCompare);
-_compareBtn.addEventListener('pointercancel', _releaseCompare);
 
 // ── Hint bubble click — opens the relevant step ───────────────────────────────
 document.querySelector('.hint-bubble').addEventListener('click', (e) => {
