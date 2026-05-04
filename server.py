@@ -134,10 +134,16 @@ def remove_bg():
     image_bytes = f.read()
     if not check_image_safe(image_bytes):
         return jsonify({'error': 'inappropriate_content'}), 400
-    # Apply EXIF orientation so sideways phone photos are upright for the AI
+    # Apply EXIF orientation so sideways phone photos are upright for the AI.
+    # Also downscale to 2048px on the long side: modern phones shoot 48MP photos
+    # whose decoded RGB buffers (>140MB) blow past the 1.9GB droplet's memory.
     try:
         img = Image.open(io.BytesIO(image_bytes))
         img = ImageOps.exif_transpose(img)
+        if max(img.size) > 2048:
+            img.thumbnail((2048, 2048), Image.LANCZOS)
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
         buf = io.BytesIO()
         img.save(buf, format='JPEG', quality=95)
         image_bytes = buf.getvalue()
