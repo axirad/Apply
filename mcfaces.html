@@ -835,7 +835,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/skinview3d@latest/bundles/skinview3d.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skinview3d@latest/bundles/skinview3d.bundle.js" async></script>
 <script>
 // ── Constants ─────────────────────────────────────────────────────────────────
 const SKIN_SCALE   = 32;  // high-res for head editor (256×256 head region)
@@ -1030,13 +1030,14 @@ const folderIcons = {
   sports:         '⚽',
 };
 
-async function loadSkinList() {
+// Wire up Pick Your Character on DOMContentLoaded so the button is interactive
+// the instant the DOM is parsed — independent of the async skinview3d bundle
+// (which can take 10+ seconds on cellular). loadSkinList still runs at
+// window.load and just populates the flyout grid.
+document.addEventListener('DOMContentLoaded', () => {
   const flyout = document.getElementById('char-flyout');
   const btn    = document.getElementById('pick-char-btn');
-
-  // Wire up button + outside-click immediately so taps work even while the
-  // gallery fetch is still in flight. Without this, the listener was attached
-  // only AFTER the await + grid build (~10s on a phone), so early taps did nothing.
+  if (!flyout || !btn) return;
   flyout.innerHTML = '<div style="padding:18px;font-size:0.9rem;color:var(--muted);text-align:center">Loading characters…</div>';
   btn.addEventListener('click', e => {
     e.stopPropagation();
@@ -1049,7 +1050,11 @@ async function loadSkinList() {
     }
   });
   document.addEventListener('click', () => flyout.classList.remove('open'));
+});
 
+async function loadSkinList() {
+  const flyout = document.getElementById('char-flyout');
+  const btn    = document.getElementById('pick-char-btn');
   try {
     const skins = await fetch(`${API_BASE}/api/skins`).then(r => r.json());
     if (!skins.length) { flyout.innerHTML = '<div style="padding:8px;font-size:0.75rem;color:var(--muted)">No skins found</div>'; return; }
