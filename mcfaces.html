@@ -486,8 +486,8 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.35;
   pointer-events: none;
 }
-.drawer-disclaimer-left  { left: 4px; text-align: left;  max-width: 90px; }
-.drawer-disclaimer-right { right: 4px; text-align: right; max-width: 110px; }
+.drawer-disclaimer-left  { left: 4px; text-align: center; max-width: 90px; }
+.drawer-disclaimer-right { right: 4px; text-align: center; max-width: 110px; }
 .drawer-pill {
   width: 44px; height: 5px; background: #666; border-radius: 3px;
 }
@@ -628,7 +628,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     <div class="drawer-handle" id="drawer-handle">
       <div class="drawer-disclaimer drawer-disclaimer-left">NOT AN OFFICIAL<br>MINECRAFT PRODUCT.</div>
       <div class="drawer-pill"></div>
-      <div class="drawer-label" style="white-space:nowrap;text-align:center;width:100%;position:relative;left:-10px">▲ Start Over</div>
+      <div class="drawer-label" style="white-space:nowrap;text-align:center;width:100%;position:relative;left:-10px">▲ Open</div>
       <div class="drawer-disclaimer drawer-disclaimer-right">NOT APPROVED BY OR<br>ASSOCIATED WITH<br>MOJANG OR MICROSOFT.</div>
     </div>
 
@@ -918,7 +918,7 @@ window.addEventListener('load', () => {
   // Open drawer by default on mobile
   if (window.innerWidth <= 768) {
     document.getElementById('sidebar').classList.add('drawer-open');
-    document.querySelector('.drawer-label').textContent = '▼ Tap to Close';
+    document.querySelector('.drawer-label').textContent = '▼ Close';
   }
 });
 window.addEventListener('resize', () => {
@@ -1084,7 +1084,7 @@ async function loadSkinList() {
         // Close drawer on mobile so hint arrow is visible
         document.getElementById('sidebar').classList.remove('drawer-open');
         const lbl = document.querySelector('.drawer-label');
-        if (lbl) lbl.textContent = '▲ Start Over';
+        if (lbl) lbl.textContent = '▲ Open';
         setReselectMode(false);
         try {
           const blob = await fetch(`${API_BASE}/skins/${encodeURIComponent(path)}`).then(r => r.blob());
@@ -1171,7 +1171,7 @@ async function onSkinFile(file) {
       const lbl = sb.querySelector('.drawer-label');
       if (!S.hasFace) {
         sb.classList.add('drawer-open');
-        if (lbl) lbl.textContent = '▼ Tap to Close';
+        if (lbl) lbl.textContent = '▼ Close';
       }
     }, 500);
   }
@@ -1633,7 +1633,7 @@ document.querySelector('.hint-bubble').addEventListener('click', (e) => {
   // On mobile, open the drawer first
   if (window.innerWidth <= 768) {
     sidebar.classList.add('drawer-open');
-    document.querySelector('.drawer-label').textContent = '▼ Tap to Close';
+    document.querySelector('.drawer-label').textContent = '▼ Close';
   }
   // Trigger the right button based on state
   if (!S.hasSkin) {
@@ -1661,7 +1661,7 @@ function setReselectMode(on) {
 
   function setOpen(open) {
     sidebar.classList.toggle('drawer-open', open);
-    label.textContent = open ? '▼ Tap to Close' : '▲ Start Over';
+    label.textContent = open ? '▼ Close' : '▲ Open';
     if (!open) {
       setReselectMode(false);
       if (S.hasSkin && !S.hasFace) {
@@ -1779,7 +1779,7 @@ document.getElementById('show-controls-btn').addEventListener('click', () => set
 document.getElementById('upload-skin-btn').addEventListener('click', () => {
   document.getElementById('sidebar').classList.remove('drawer-open');
   const lbl = document.querySelector('.drawer-label');
-  if (lbl) lbl.textContent = '▲ Start Over';
+  if (lbl) lbl.textContent = '▲ Open';
   document.getElementById('skin-file').click();
 });
 let _facePickerOpen = false;
@@ -1788,7 +1788,7 @@ document.getElementById('face-btn').addEventListener('click', () => {
   // Close drawer on mobile so the loading characters are visible
   document.getElementById('sidebar').classList.remove('drawer-open');
   const lbl = document.querySelector('.drawer-label');
-  if (lbl) lbl.textContent = '▲ Start Over';
+  if (lbl) lbl.textContent = '▲ Open';
   // Show emoji crew immediately — don't wait for file picker to return
   S.faceProcessing = true; updateButtons();
   showLoading('Finding your photo…');
