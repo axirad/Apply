@@ -342,13 +342,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   .desktop-only { display: none !important; }
   .mobile-only  { display: flex !important; }
   .viewer-buy {
-    display: flex; flex-direction: row; align-items: center; gap: 10px;
-    position: fixed; bottom: 90px; left: 20px; right: auto; z-index: 149;
+    display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 6px;
+    position: fixed; bottom: 90px; left: 10px; right: 10px; z-index: 149;
   }
   .viewer-buy-cta { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-  .viewer-buy .buy-btn  { width: 128px !important; height: 43px !important; padding: 0 !important; font-size: 0.77rem !important; }
+  .viewer-buy .buy-btn  { width: 124px !important; height: 43px !important; padding: 0 !important; font-size: 0.77rem !important; }
   .viewer-buy .buy-price { display: block; }
-  .viewer-buy .more-info-btn { width: 120px !important; height: 40px !important; padding: 0 6px !important; font-size: 0.65rem !important; margin-bottom: 0; margin-left: -10px !important; }
+  .viewer-buy .more-info-btn { width: 116px !important; height: 40px !important; padding: 0 6px !important; font-size: 0.65rem !important; margin-bottom: 0; }
   /* hide when drawer is open */
   .layout:has(.sidebar.drawer-open) .viewer-buy { display: none; }
   /* hide when controls are showing */
@@ -391,7 +391,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
   cursor: pointer; transition: border-color 0.15s, color 0.15s;
 }
 .faq-btn:hover { border-color: #ff8000; color: #ff8000; }
-.viewer-buy .faq-btn { width: 110px !important; height: 40px !important; padding: 0 6px !important; font-size: 0.65rem !important; }
+.viewer-buy .faq-btn { width: 104px !important; height: 40px !important; padding: 0 6px !important; font-size: 0.65rem !important; }
 
 /* More Info flyout overlay */
 @keyframes flyout-up { from{transform:translateY(100%)} to{transform:translateY(0)} }
@@ -490,7 +490,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
     position: fixed !important;
     bottom: 0; left: 0;
     width: 100vw !important; max-width: 100vw !important;
-    height: calc(78vh - 150px); height: calc(78svh - 150px); height: calc(78dvh - 150px);
+    height: calc(85vh - 70px); height: calc(85svh - 70px); height: calc(85dvh - 70px);
     transform: translateY(calc(100% - var(--drawer-peek) - env(safe-area-inset-bottom, 0px)));
     transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
     will-change: transform;
