@@ -2,6 +2,20 @@
 
 ---
 
+## 2026-05-05 — Session 30: iPhone 15 / iOS 26.3.1 polish marathon
+
+**File changed:** `mcfaces.html` (8 commits)
+
+- **`f6cb9e8`** — `.viewer-buy` floating row anchored both sides (`left:10/right:10` + `space-between`); FAQ button no longer clips off the right edge on iPhone 15. Drawer height bumped `78dvh−150` → `85dvh−70` so iOS 26's persistent toolbar no longer hides Step 2.
+- **`e7f6183`** — Step 1 collapses to a single green `✓ Character: <name>  [Change]` line once a skin is picked. Promotes Step 2 "Upload Face Photo" to the top of the drawer.
+- **`14f3ad6`** + **`e8342ee`** — **Pick Your Character responsiveness** (huge perf win). Added `async` to skinview3d bundle so HTML parsing isn't blocked ~10s on cellular. Moved click-handler attachment from inside `loadSkinList()` (gated by `window.load`) to a `DOMContentLoaded` listener. Button now responsive instantly at app launch; flyout shows "Loading characters…" until the gallery resolves.
+- **`47a8d51`** + **`9421e54`** + **`e6770fc`** — Drawer handle decluttered for iPhone 15: disclaimers pulled to edges (`left:18→4`, `right:8→4`), label shortened "▲ Start Over" / "▼ Tap to Close" → "▲ Open" / "▼ Close" across all 8 sites.
+- **`fb68db6`** — `.face-panel` and `.photo-panel` mobile position `bottom:178px → 163px` so they no longer cover the character's face on iPhone 15.
+
+**Open mystery deferred to next session:** iPhone 15 panels render ~10-15% larger than iPhone 13 with identical CSS (uniform scale across all internals — title, buttons, fp-label, padding). Page Zoom and Display Zoom both confirmed default. Hypothesis: iOS 26 changed default rem baseline. Next-session plan: instrument with `getComputedStyle(document.documentElement).fontSize` on iPhone 15 to confirm before changing CSS.
+
+---
+
 ## 2026-04-22 — BrowserStack Mobile Polish (iPhone first)
 
 **File changed:** `mcfaces.html`
