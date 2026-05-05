@@ -1033,6 +1033,23 @@ const folderIcons = {
 async function loadSkinList() {
   const flyout = document.getElementById('char-flyout');
   const btn    = document.getElementById('pick-char-btn');
+
+  // Wire up button + outside-click immediately so taps work even while the
+  // gallery fetch is still in flight. Without this, the listener was attached
+  // only AFTER the await + grid build (~10s on a phone), so early taps did nothing.
+  flyout.innerHTML = '<div style="padding:18px;font-size:0.9rem;color:var(--muted);text-align:center">Loading characters…</div>';
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = flyout.classList.contains('open');
+    flyout.classList.toggle('open');
+    if (!isOpen) {
+      const r = btn.getBoundingClientRect();
+      flyout.style.top  = (r.bottom + 4) + 'px';
+      flyout.style.left = r.left + 'px';
+    }
+  });
+  document.addEventListener('click', () => flyout.classList.remove('open'));
+
   try {
     const skins = await fetch(`${API_BASE}/api/skins`).then(r => r.json());
     if (!skins.length) { flyout.innerHTML = '<div style="padding:8px;font-size:0.75rem;color:var(--muted)">No skins found</div>'; return; }
@@ -1072,20 +1089,8 @@ async function loadSkinList() {
       grid.appendChild(item);
     });
 
+    flyout.innerHTML = '';
     flyout.appendChild(grid);
-
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const isOpen = flyout.classList.contains('open');
-      flyout.classList.toggle('open');
-      if (!isOpen) {
-        const r = btn.getBoundingClientRect();
-        flyout.style.top  = (r.bottom + 4) + 'px';
-        flyout.style.left = r.left + 'px';
-      }
-    });
-
-    document.addEventListener('click', () => flyout.classList.remove('open'));
   } catch(e) {
     flyout.innerHTML = '<div style="padding:8px;font-size:0.75rem;color:var(--muted)">Start server to use gallery</div>';
   }
