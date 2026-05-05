@@ -133,6 +133,27 @@ body {
 .btn-gray:hover:not(:disabled) { background: #555; border-color: #6a6a6a; }
 .step.step-active { background: rgba(58,143,212,0.08); border: 1px solid rgba(58,143,212,0.28); border-radius: 8px; padding: 6px 10px; margin: -6px -10px; }
 
+/* Step 1 collapsed summary — shown after character picked, hides full panel */
+.step1-summary {
+  display: none; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 10px; background: rgba(0,170,80,0.10);
+  border: 1px solid rgba(0,170,80,0.40); border-radius: 8px;
+  color: #ddd; font-size: 0.92rem; font-weight: 600;
+}
+#step1-summary-name { color: var(--accent); margin-left: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+.step1-summary-change {
+  background: none; border: 1px solid #888; color: #ccc;
+  border-radius: 14px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; flex-shrink: 0;
+}
+.step1-summary-change:hover { border-color: #ff8000; color: #ff8000; }
+#step1.step-collapsed .sec-title,
+#step1.step-collapsed #pick-char-btn,
+#step1.step-collapsed #upload-skin-btn,
+#step1.step-collapsed #skin-lbl { display: none !important; }
+#step1.step-collapsed .step1-summary { display: flex !important; }
+#step1.step-collapsed { background: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
+
 /* Thumbnails */
 .thumb-row { display: flex; gap: 8px; margin-top: 8px; }
 .thumb-col { flex: 1; display: flex; flex-direction: column; gap: 3px; }
@@ -625,6 +646,10 @@ input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; m
 
     <!-- 1. Skin -->
     <div class="step step-active" id="step1">
+    <div class="step1-summary">
+      <span>✓ Character:<span id="step1-summary-name">—</span></span>
+      <button class="step1-summary-change" id="step1-summary-change">Change</button>
+    </div>
     <div class="sec-title" style="font-size:1.176rem;">1. Start Your Creation Here</div>
     <button class="btn btn-blue" id="pick-char-btn" style="font-size:1.1rem;margin-bottom:6px">Pick Your Character</button>
     <button class="btn btn-gray" id="upload-skin-btn" style="width:100%;margin-top:6px">Upload Your Own Skin<br><span style="font-size:1.05em;font-weight:400;color:#fff">Optional</span></button>
@@ -1684,6 +1709,14 @@ document.getElementById('reselect-face-btn').addEventListener('click', () => {
   document.getElementById('face-btn').click();
 });
 
+// Collapsed Step 1 "Change" button — reset skin and reopen the character picker
+document.getElementById('step1-summary-change').addEventListener('click', () => {
+  S.origSkin = null; S.compSkin = null; S.rawSkin = null; S.hasSkin = false;
+  document.getElementById('skin-lbl').textContent = 'No skin loaded';
+  markDirty(); updateButtons();  // removes .step-collapsed since hasSkin is false now
+  setTimeout(() => document.getElementById('pick-char-btn').click(), 0);
+});
+
 // ── Sidebar drag resize ───────────────────────────────────────────────────────
 (function() {
   const handle  = document.getElementById('sidebar-drag');
@@ -2077,6 +2110,15 @@ function updateButtons(){
     document.getElementById('step1').classList.replace('step-dim','step-active');
     document.getElementById('step2').classList.replace('step-dim','step-active');
     document.getElementById('step3').classList.remove('step-active');
+  }
+  // Step 1 collapses to a single confirmation line once skin is picked but face isn't
+  const step1El = document.getElementById('step1');
+  const collapse = S.hasSkin && !S.hasFace;
+  step1El.classList.toggle('step-collapsed', collapse);
+  if (collapse) {
+    const raw = (document.getElementById('skin-lbl').textContent || '').trim();
+    const name = raw.replace(/\.png$/i, '') || 'picked';
+    document.getElementById('step1-summary-name').textContent = ' ' + name;
   }
 }
 
